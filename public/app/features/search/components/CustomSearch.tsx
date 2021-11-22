@@ -27,7 +27,6 @@ export const CustomSearch: FC<Props> = memo(({ onCloseSearch }) => {
     return (
       <CustomScrollbar>
         <TeamSearchResults
-          key={1}
           results={teamResults}
           loading={teamLoading}
           editable={false}
@@ -41,7 +40,6 @@ export const CustomSearch: FC<Props> = memo(({ onCloseSearch }) => {
     return (
       <CustomScrollbar>
         <SiteSearchResults
-          key={2}
           results={siteResults}
           loading={siteLoading}
           editable={false}

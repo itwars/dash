@@ -2,19 +2,18 @@ import React, { FC } from 'react';
 import { css } from 'emotion';
 import { GrafanaTheme } from '@grafana/data';
 import { stylesFactory, useTheme, Spinner } from '@grafana/ui';
-import { SiteSection, OnToggleSiteChecked } from '../types';
+import { SiteSection } from '../types';
 import { SiteSectionRow } from './SiteSectionRow';
 import { AssetSectionRow } from './AssetSectionRow';
 
 export interface Props {
   editable?: boolean;
   loading?: boolean;
-  onToggleChecked?: OnToggleSiteChecked;
   onToggleSection: (section: SiteSection) => void;
   results: SiteSection[];
 }
 
-export const SiteSearchResults: FC<Props> = ({ editable, loading, onToggleChecked, onToggleSection, results }) => {
+export const SiteSearchResults: FC<Props> = ({ editable, loading, onToggleSection, results }) => {
   const theme = useTheme();
   const styles = getSectionStyles(theme);
   const renderFolders = () => {
@@ -30,7 +29,7 @@ export const SiteSearchResults: FC<Props> = ({ editable, loading, onToggleChecke
   const renderSite = (section: SiteSection) => {
     return (
       <>
-        <SiteSectionRow onSectionClick={onToggleSection} {...{ onToggleChecked, editable, section }} />
+        <SiteSectionRow onSectionClick={onToggleSection} {...{ editable, section }} />
         {section.expanded && renderAssets(section)}
       </>
     );
@@ -44,11 +43,7 @@ export const SiteSearchResults: FC<Props> = ({ editable, loading, onToggleChecke
           <table className="search-table search-table--hover">
             <tbody>
               {site.assets.map((asset) => (
-                <AssetSectionRow
-                  key={asset.id}
-                  onSectionClick={onToggleSection}
-                  {...{ onToggleChecked, editable, asset, site }}
-                />
+                <AssetSectionRow key={asset.id} onSectionClick={onToggleSection} {...{ editable, asset, site }} />
               ))}
             </tbody>
           </table>

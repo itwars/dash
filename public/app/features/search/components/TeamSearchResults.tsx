@@ -2,19 +2,18 @@ import React, { FC } from 'react';
 import { css } from 'emotion';
 import { GrafanaTheme } from '@grafana/data';
 import { stylesFactory, useTheme, Spinner } from '@grafana/ui';
-import { TeamSection, OnToggleTeamChecked } from '../types';
+import { TeamSection } from '../types';
 import { TeamSectionRow } from './TeamSectionRow';
 import { TeamSiteSectionRow } from './TeamSiteSectionRow';
 
 export interface Props {
   editable?: boolean;
   loading?: boolean;
-  onToggleChecked?: OnToggleTeamChecked;
   onToggleSection: (section: TeamSection) => void;
   results: TeamSection[];
 }
 
-export const TeamSearchResults: FC<Props> = ({ editable, loading, onToggleChecked, onToggleSection, results }) => {
+export const TeamSearchResults: FC<Props> = ({ editable, loading, onToggleSection, results }) => {
   const theme = useTheme();
   const styles = getSectionStyles(theme);
 
@@ -31,7 +30,7 @@ export const TeamSearchResults: FC<Props> = ({ editable, loading, onToggleChecke
   const renderTeam = (section: TeamSection) => {
     return (
       <>
-        <TeamSectionRow key={section.id} onSectionClick={onToggleSection} {...{ onToggleChecked, editable, section }} />
+        <TeamSectionRow key={section.id} onSectionClick={onToggleSection} {...{ editable, section }} />
         {section.expanded && renderSites(section)}
       </>
     );
@@ -45,11 +44,7 @@ export const TeamSearchResults: FC<Props> = ({ editable, loading, onToggleChecke
           <table className="search-table search-table--hover">
             <tbody>
               {team.sites.map((site) => (
-                <TeamSiteSectionRow
-                  key={site.id}
-                  onSectionClick={onToggleSection}
-                  {...{ onToggleChecked, editable, site, team }}
-                />
+                <TeamSiteSectionRow key={site.id} onSectionClick={onToggleSection} {...{ editable, site, team }} />
               ))}
             </tbody>
           </table>

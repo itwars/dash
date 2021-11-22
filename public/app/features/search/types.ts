@@ -174,8 +174,6 @@ export type UseTeamSearch = <S>(
 export type OnToggleChecked = (item: DashboardSectionItem | DashboardSection) => void;
 export type OnDeleteItems = (folders: string[], dashboards: string[]) => void;
 export type OnMoveItems = (selectedDashboards: DashboardSectionItem[], folder: FolderInfo | null) => void;
-export type OnToggleSiteChecked = (item: SiteSection) => void;
-export type OnToggleTeamChecked = (item: TeamSection) => void;
 
 export enum SearchLayout {
   List = 'list',

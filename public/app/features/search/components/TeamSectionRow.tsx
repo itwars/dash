@@ -25,12 +25,12 @@ export const TeamSectionRow: FC<TeamSectionRowProps> = ({ section, onSectionClic
   return (
     <tr className={styles.wrapper} onClick={onSectionExpand}>
       <td style={{ width: '5%' }} className="text-center link-td">
-        <a href="#">
+        <a>
           <img className="search-table__avatar" src={section.avatarUrl} />
         </a>
       </td>
       <td style={{ width: '85%' }} className="link-td">
-        <a href="#">{section.name}</a>
+        <a>{section.name}</a>
       </td>
       <td style={{ width: '5%' }} className="link-td">
         {section.itemsFetching ? <Spinner /> : <Icon name={section.expanded ? 'angle-down' : 'angle-right'} />}
