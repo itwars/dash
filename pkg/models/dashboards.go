@@ -168,6 +168,7 @@ type Dashboard struct {
 
 	Title string
 	Data  *simplejson.Json
+	Index int
 }
 
 func (d *Dashboard) SetId(id int64) {
@@ -341,6 +342,7 @@ type SaveDashboardCommand struct {
 	FolderId     int64            `json:"folderId"`
 	FolderUid    string           `json:"folderUid"`
 	IsFolder     bool             `json:"isFolder"`
+	Index        int              `json:"index"`
 
 	UpdatedAt time.Time
 

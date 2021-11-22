@@ -52,7 +52,7 @@ func TestService(t *testing.T) {
 	t.Run("update datasource should encrypt the secure json data", func(t *testing.T) {
 		ctx := context.Background()
 		sjd := map[string]string{"password": "678910"}
-		cmd := models.UpdateDataSourceCommand{Id: ds.Id, OrgId: ds.OrgId, SecureJsonData: sjd}
+		cmd := models.UpdateDataSourceCommand{Id: ds.Id, SecureJsonData: sjd}
 		err := s.UpdateDataSource(ctx, &cmd)
 		require.NoError(t, err)
 

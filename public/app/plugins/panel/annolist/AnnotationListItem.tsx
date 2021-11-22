@@ -58,6 +58,7 @@ interface AvatarProps {
   onClick: () => void;
   avatarUrl?: string;
   email?: string;
+  phone?: string;
 }
 
 const Avatar: FC<AvatarProps> = ({ onClick, avatarUrl, login, email }) => {

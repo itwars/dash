@@ -17,7 +17,7 @@ import { AppEvents, DataQueryErrorType } from '@grafana/data';
 
 import appEvents from 'app/core/app_events';
 import { getConfig } from 'app/core/config';
-import { DashboardSearchHit } from 'app/features/search/types';
+import { DashboardSearchHit, QueryResult } from 'app/features/search/types';
 import { FolderDTO } from 'app/types';
 import { coreModule } from 'app/core/core_module';
 import { ContextSrv, contextSrv } from './context_srv';
@@ -414,6 +414,22 @@ export class BackendSrv implements BackendService {
 
   search(query: any): Promise<DashboardSearchHit[]> {
     return this.get('/api/search', query);
+  }
+
+  searchSites(query: any): Promise<QueryResult> {
+    return this.get('/api/sites/search', query);
+  }
+
+  searchTeamSites(query: any): Promise<QueryResult> {
+    return this.get('/api/teamsites/search', query);
+  }
+
+  searchTeams(query: any): Promise<QueryResult> {
+    return this.get('/api/teams/search', query);
+  }
+
+  searchAssets(query: any): Promise<QueryResult> {
+    return this.get('/api/assets/search', query);
   }
 
   getDashboardByUid(uid: string) {

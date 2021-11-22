@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/gosimple/slug"
 	"github.com/grafana/grafana/pkg/api/dtos"
 	"github.com/grafana/grafana/pkg/api/response"
 	"github.com/grafana/grafana/pkg/bus"
@@ -18,6 +20,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/alerting"
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/guardian"
+	"github.com/grafana/grafana/pkg/services/search"
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/web"
 )
@@ -69,6 +72,57 @@ func (hs *HTTPServer) TrimDashboard(c *models.ReqContext, cmd models.TrimDashboa
 	return response.JSON(200, dto)
 }
 
+func (hs *HTTPServer) GetDashboardBySlug(c *models.ReqContext) response.Response {
+
+	deviceType := slug.Make(strings.ToLower(web.Params(c.Req)[":slug"]))
+
+	query := models.GetDashboardsBySlugQuery{OrgId: c.OrgId, Slug: deviceType}
+
+	if err := bus.Dispatch(&query); err != nil {
+		return response.JSON(404, util.DynMap{"status": "not-found", "message": err.Error()})
+	}
+
+	if len(query.Result) != 1 {
+		return response.JSON(412, util.DynMap{"status": "unique-slugs-does-not-exists", "message": models.ErrDashboardNotFound.Error()})
+	}
+
+	folderIDs := make([]int64, 0)
+	folderIDs = append(folderIDs, query.Result[0].Id)
+	searchQuery := search.Query{
+		SignedInUser: c.SignedInUser,
+		OrgId:        c.OrgId,
+		FolderIds:    folderIDs,
+		Permission:   models.PERMISSION_VIEW,
+	}
+
+	err := bus.Dispatch(&searchQuery)
+	if err != nil {
+		return response.JSON(404, util.DynMap{"status": "not-found", "message": err.Error()})
+	}
+
+	if searchQuery.Result.Len() < 1 {
+		return response.JSON(404, util.DynMap{"status": "not-found", "message": models.ErrDashboardNotFound.Error()})
+	}
+
+	var hit *search.Hit
+	for i := range searchQuery.Result {
+		if i == 0 {
+			hit = searchQuery.Result[i]
+		} else {
+			if hit.Index > searchQuery.Result[i].Index {
+				hit = searchQuery.Result[i]
+			}
+		}
+	}
+	if hit == nil {
+		return response.JSON(404, util.DynMap{"status": "not-found", "message": models.ErrDashboardNotFound.Error()})
+	}
+	web.Params(c.Req)[":slug"] = hit.Slug
+	web.Params(c.Req)[":uid"] = hit.UID
+	c.TimeRequest(metrics.MApiDashboardSearch)
+	return hs.GetDashboard(c)
+}
+
 func (hs *HTTPServer) GetDashboard(c *models.ReqContext) response.Response {
 	uid := web.Params(c.Req)[":uid"]
 	dash, rsp := getDashboardHelper(c.Req.Context(), c.OrgId, 0, uid)
@@ -95,9 +149,9 @@ func (hs *HTTPServer) GetDashboard(c *models.ReqContext) response.Response {
 		return dashboardGuardianResponse(err)
 	}
 
-	canEdit, _ := guardian.CanEdit()
-	canSave, _ := guardian.CanSave()
-	canAdmin, _ := guardian.CanAdmin()
+	// canEdit, _ := guardian.CanEdit()
+	// canSave, _ := guardian.CanSave()
+	// canAdmin, _ := guardian.CanAdmin()
 
 	isStarred, err := isDashboardStarredByUser(c, dash.Id)
 	if err != nil {
@@ -117,10 +171,10 @@ func (hs *HTTPServer) GetDashboard(c *models.ReqContext) response.Response {
 		IsStarred:   isStarred,
 		Slug:        dash.Slug,
 		Type:        models.DashTypeDB,
-		CanStar:     c.IsSignedIn,
-		CanSave:     canSave,
-		CanEdit:     canEdit,
-		CanAdmin:    canAdmin,
+		CanStar:     c.IsGrafanaAdmin,
+		CanSave:     c.IsGrafanaAdmin,
+		CanEdit:     c.IsGrafanaAdmin,
+		CanAdmin:    c.IsGrafanaAdmin,
 		Created:     dash.Created,
 		Updated:     dash.Updated,
 		UpdatedBy:   updater,
@@ -131,6 +185,7 @@ func (hs *HTTPServer) GetDashboard(c *models.ReqContext) response.Response {
 		FolderId:    dash.FolderId,
 		Url:         dash.GetUrl(),
 		FolderTitle: "General",
+		Index:       dash.Index,
 	}
 
 	// lookup folder title
@@ -327,6 +382,7 @@ func (hs *HTTPServer) PostDashboard(c *models.ReqContext, cmd models.SaveDashboa
 		OrgId:     c.OrgId,
 		User:      c.SignedInUser,
 		Overwrite: cmd.Overwrite,
+		Index:     cmd.Index,
 	}
 
 	dashSvc := dashboards.NewService(hs.SQLStore)
@@ -472,7 +528,7 @@ func (hs *HTTPServer) GetHomeDashboard(c *models.ReqContext) response.Response {
 		return response.Error(500, "Failed to load home dashboard", err)
 	}
 
-	hs.addGettingStartedPanelToHomeDashboard(c, dash.Dashboard)
+	// hs.addGettingStartedPanelToHomeDashboard(c, dash.Dashboard)
 
 	return response.JSON(200, &dash)
 }
@@ -480,11 +536,11 @@ func (hs *HTTPServer) GetHomeDashboard(c *models.ReqContext) response.Response {
 func (hs *HTTPServer) addGettingStartedPanelToHomeDashboard(c *models.ReqContext, dash *simplejson.Json) {
 	// We only add this getting started panel for Admins who have not dismissed it,
 	// and if a custom default home dashboard hasn't been configured
-	if !c.HasUserRole(models.ROLE_ADMIN) ||
-		c.HasHelpFlag(models.HelpFlagGettingStartedPanelDismissed) ||
-		hs.Cfg.DefaultHomeDashboardPath != "" {
-		return
-	}
+	// if !c.HasUserRole(models.ROLE_ADMIN) ||
+	// 	c.HasHelpFlag(models.HelpFlagGettingStartedPanelDismissed) ||
+	// 	hs.Cfg.DefaultHomeDashboardPath != "" {
+	// 	return
+	// }
 
 	panels := dash.Get("panels").MustArray()
 

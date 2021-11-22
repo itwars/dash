@@ -43,6 +43,7 @@ type CurrentUser struct {
 	HelpFlags1                 models.HelpFlags1  `json:"helpFlags1"`
 	HasEditPermissionInFolders bool               `json:"hasEditPermissionInFolders"`
 	Permissions                UserPermissionsMap `json:"permissions,omitempty"`
+	Phone                      string             `json:"phone"`
 }
 
 type UserPermissionsMap map[string]bool

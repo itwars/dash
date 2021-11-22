@@ -57,6 +57,7 @@ type SaveDashboardDTO struct {
 	Message   string
 	Overwrite bool
 	Dashboard *models.Dashboard
+	Index     int
 }
 
 type dashboardServiceImpl struct {
@@ -161,6 +162,7 @@ func (dr *dashboardServiceImpl) buildSaveDashboardCommand(dto *SaveDashboardDTO,
 		FolderId:  dash.FolderId,
 		IsFolder:  dash.IsFolder,
 		PluginId:  dash.PluginId,
+		Index:     dto.Index,
 	}
 
 	if !dto.UpdatedAt.IsZero() {

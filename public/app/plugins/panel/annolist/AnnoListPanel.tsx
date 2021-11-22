@@ -26,6 +26,7 @@ interface UserInfo {
   id?: number;
   login?: string;
   email?: string;
+  phone?: string;
 }
 
 export interface Props extends PanelProps<AnnoOptions> {}

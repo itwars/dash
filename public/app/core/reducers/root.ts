@@ -16,6 +16,13 @@ import ldapReducers from 'app/features/admin/state/reducers';
 import templatingReducers from 'app/features/variables/state/reducers';
 import importDashboardReducers from 'app/features/manage-dashboards/state/reducers';
 import panelsReducers from 'app/features/panel/state/reducers';
+import alarmsReducer from 'app/features/alarms/state/reducers';
+import assetReducer from 'app/features/assets/state/reducers';
+import sitesReducer from 'app/features/sites/state/reducers';
+import userAlarmsReducer from 'app/features/useralarms/state/reducers';
+import siteTypesReducer from 'app/features/sitetypes/state/reducers';
+import assetTypesReducer from 'app/features/assettypes/state/reducers';
+import dashboardNavsReducer from 'app/features/dashboard/containers/state/reducers';
 
 const rootReducers = {
   ...sharedReducers,
@@ -34,6 +41,13 @@ const rootReducers = {
   ...templatingReducers,
   ...importDashboardReducers,
   ...panelsReducers,
+  ...alarmsReducer,
+  ...assetReducer,
+  ...sitesReducer,
+  ...userAlarmsReducer,
+  ...siteTypesReducer,
+  ...assetTypesReducer,
+  ...dashboardNavsReducer,
 };
 
 const addedReducers = {};

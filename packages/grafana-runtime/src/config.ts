@@ -25,6 +25,7 @@ export class GrafanaBootConfig implements GrafanaConfig {
   minRefreshInterval = '';
   appUrl = '';
   appSubUrl = '';
+  appTitle = '';
   windowTitlePrefix = '';
   buildInfo: BuildInfo = {} as BuildInfo;
   newPanelTitle = '';
@@ -108,7 +109,7 @@ export class GrafanaBootConfig implements GrafanaConfig {
 
     const defaults = {
       datasources: {},
-      windowTitlePrefix: 'Grafana - ',
+      windowTitlePrefix: 'Dashboard -',
       panels: {},
       newPanelTitle: 'Panel Title',
       playlist_timespan: '1m',

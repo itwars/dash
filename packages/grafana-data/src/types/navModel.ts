@@ -15,6 +15,7 @@ export interface NavModelItem {
   parentItem?: NavModelItem;
   showOrgSwitcher?: boolean;
   onClick?: () => void;
+  index?: number;
 }
 
 /**

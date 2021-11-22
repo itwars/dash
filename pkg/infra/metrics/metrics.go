@@ -49,6 +49,8 @@ var (
 	// MApiDashboardSearch is a metric summary for dashboard search duration
 	MApiDashboardSearch prometheus.Summary
 
+	MApiSiteSearch prometheus.Summary
+
 	// MApiAdminUserCreate is a metric api admin user created counter
 	MApiAdminUserCreate prometheus.Counter
 

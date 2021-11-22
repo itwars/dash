@@ -50,6 +50,7 @@ func (b *Builder) buildSelect() {
 			dashboard.uid,
 			dashboard.title,
 			dashboard.slug,
+			dashboard.index,
 			dashboard_tag.term,
 			dashboard.is_folder,
 			dashboard.folder_id,

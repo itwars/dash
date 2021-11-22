@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { css, cx } from '@emotion/css';
 import { GrafanaTheme } from '@grafana/data';
-import { DashboardQuery } from '../types';
+import { DashboardQuery, SearchQuery } from '../types';
 import { useStyles } from '@grafana/ui';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 interface SearchFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
-  query: DashboardQuery;
+  query: DashboardQuery | SearchQuery;
   onChange: (query: string) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   clearable?: boolean;
@@ -63,7 +63,7 @@ export const SearchField: FC<SearchFieldProps> = ({ query, onChange, size, clear
     <div className={cx(styles.wrapper, className)}>
       <input
         type="text"
-        placeholder="Search dashboards by name"
+        placeholder="Search sites"
         value={query.query}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           onChange(event.currentTarget.value);

@@ -37,6 +37,7 @@ export interface AnnotationEvent {
   userId?: number;
   login?: string;
   email?: string;
+  phone?: string;
   avatarUrl?: string;
   time?: number;
   timeEnd?: number;

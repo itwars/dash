@@ -1,0 +1,17 @@
+{
+  "type": "panel",
+  "name": "Asset List",
+  "id": "assetlist",
+
+  "info": {
+    "description": "Shows list of assets",
+    "author": {
+      "name": "Dashboard",
+      "url": "https://www.nxtthinq.com"
+    },
+    "logos": {
+      "small": "img/icn-assetlist-panel.svg",
+      "large": "img/icn-assetlist-panel.svg"
+    }
+  }
+}

@@ -5,6 +5,10 @@ export type IconSize = ComponentSize | 'xl' | 'xxl' | 'xxxl';
 
 export const getAvailableIcons = () =>
   [
+    'object-group',
+    'map-o',
+    'rss',
+    'map-marker',
     'angle-double-down',
     'angle-double-right',
     'angle-double-up',

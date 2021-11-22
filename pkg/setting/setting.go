@@ -420,6 +420,9 @@ type Cfg struct {
 
 	// Unified Alerting
 	UnifiedAlerting UnifiedAlertingSettings
+
+	//Microservices setting
+	Service ServiceSettings
 }
 
 // IsLiveConfigEnabled returns true if live should be able to save configs to SQL tables
@@ -954,6 +957,7 @@ func (cfg *Cfg) Load(args CommandLineArgs) error {
 	cfg.readQuotaSettings()
 	cfg.readAnnotationSettings()
 	cfg.readExpressionsSettings()
+	cfg.readServiceSettings()
 	if err := cfg.readGrafanaEnvironmentMetrics(); err != nil {
 		return err
 	}

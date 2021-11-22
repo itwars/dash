@@ -23,7 +23,7 @@ const TopSection = () => {
 
   return (
     <div data-testid="top-section-items" className={styles.container}>
-      <NavBarItem isActive={isSearchActive(location)} label="Search dashboards" onClick={onOpenSearch}>
+      <NavBarItem isActive={isSearchActive(location)} label="Search sites" onClick={onOpenSearch}>
         <Icon name="search" size="xl" />
       </NavBarItem>
       {mainLinks.map((link, index) => {

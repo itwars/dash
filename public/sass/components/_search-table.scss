@@ -1,0 +1,66 @@
+// ==========================================================================
+// SEARCH TABLE
+// ==========================================================================
+
+// Table
+// --------------------------------------------------------------------------
+
+.search-table * {
+  box-sizing: border-box;
+}
+
+.search-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    width: auto;
+    padding: $space-inset-squish-md;
+    text-align: left;
+    line-height: 30px;
+    height: 30px;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: $space-inset-squish-md;
+    line-height: 30px;
+    height: 30px;
+    white-space: nowrap;
+  }
+
+  .link-td {
+    padding: 0;
+    line-height: 30px;
+    height: 30px;
+    white-space: nowrap;
+
+    &.search-table__switch-cell {
+      padding: 0;
+      border-right: 3px solid $page-bg;
+    }
+
+    a {
+      display: block;
+      padding: $space-inset-squish-md;
+    }
+  }
+
+  .ellipsis {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-table__avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+}
+.search-table__weak-italic {
+  font-style: italic;
+  color: $text-color-weak;
+}

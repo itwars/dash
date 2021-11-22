@@ -49,7 +49,6 @@ func dataPluginQueryAdapter(pluginID string, handler backend.QueryDataHandler, o
 
 		req := &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{
-				OrgID:                      ds.OrgId,
 				PluginID:                   pluginID,
 				User:                       adapters.BackendUserFromSignedInUser(query.User),
 				DataSourceInstanceSettings: instanceSettings,

@@ -1,0 +1,17 @@
+{
+  "type": "panel",
+  "name": "Site List",
+  "id": "sitelist",
+
+  "info": {
+    "description": "Shows list of sites",
+    "author": {
+      "name": "Dashboard",
+      "url": "https://www.nxtthinq.com"
+    },
+    "logos": {
+      "small": "img/icn-sitelist-panel.svg",
+      "large": "img/icn-sitelist-panel.svg"
+    }
+  }
+}

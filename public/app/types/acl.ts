@@ -10,6 +10,7 @@ export interface DashboardAclDTO {
   userId?: number;
   userLogin?: string;
   userEmail?: string;
+  userPhone?: string;
   teamId?: number;
   team?: string;
   permission?: PermissionLevel;
@@ -31,6 +32,7 @@ export interface DashboardAcl {
   userId?: number;
   userLogin?: string;
   userEmail?: string;
+  userPhone?: string;
   teamId?: number;
   team?: string;
   permission?: PermissionLevel;

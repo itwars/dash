@@ -52,8 +52,8 @@ type FindPersistedDashboardsQuery struct {
 	Page         int64
 	Permission   models.PermissionType
 	Sort         SortOption
-
-	Filters []interface{}
+	Index        int
+	Filters      []interface{}
 
 	Result HitList
 }

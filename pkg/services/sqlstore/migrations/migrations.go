@@ -55,6 +55,16 @@ func (*OSSMigrations) AddMigration(mg *Migrator) {
 	addSecretsMigration(mg)
 	addKVStoreMigrations(mg)
 	ualert.AddDashboardUIDPanelIDMigration(mg)
+	addSiteTypeMigrations(mg)
+	addAssetTypeMigrations(mg)
+	addAlarmMigrations(mg)
+	addAssetMigrations(mg)
+	addSiteMigrations(mg)
+	addSiteTeamMigrations(mg)
+	addAlarmStateMigrations(mg)
+	addAlarmHistoryMigrations(mg)
+	addNotifierMigrations(mg)
+	addNotificationPreferenceMigrations(mg)
 }
 
 func addMigrationLogMigrations(mg *Migrator) {

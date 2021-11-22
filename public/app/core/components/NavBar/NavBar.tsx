@@ -4,13 +4,9 @@ import { css, cx } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import { Icon, useTheme2 } from '@grafana/ui';
 import appEvents from '../../app_events';
-import { Branding } from 'app/core/components/Branding/Branding';
-import config from 'app/core/config';
 import { CoreEvents, KioskMode } from 'app/types';
 import TopSection from './TopSection';
 import BottomSection from './BottomSection';
-
-const homeUrl = config.appSubUrl || '/';
 
 export const NavBar: FC = React.memo(() => {
   const theme = useTheme2();
@@ -29,9 +25,9 @@ export const NavBar: FC = React.memo(() => {
 
   return (
     <nav className={cx(styles.sidemenu, 'sidemenu')} data-testid="sidemenu" aria-label="Main menu">
-      <a href={homeUrl} className={styles.homeLogo}>
+      {/* <a href={homeUrl} className={styles.homeLogo}>
         <Branding.MenuLogo />
-      </a>
+      </a> */}
       <div className={styles.mobileSidemenuLogo} onClick={toggleNavBarSmallBreakpoint} key="hamburger">
         <Icon name="bars" size="xl" />
         <span className={styles.closeButton}>

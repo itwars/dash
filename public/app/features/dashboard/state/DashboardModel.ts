@@ -68,6 +68,7 @@ export interface DashboardLink {
   targetBlank: boolean;
   keepTime: boolean;
   includeVars: boolean;
+  index: number;
 }
 
 export class DashboardModel {
@@ -76,6 +77,7 @@ export class DashboardModel {
   title: string;
   autoUpdate: any;
   description: any;
+  index: any;
   tags: any;
   style: any;
   timezone: any;

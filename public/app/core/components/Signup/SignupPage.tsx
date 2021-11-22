@@ -11,6 +11,7 @@ import { PasswordField } from '../PasswordField/PasswordField';
 interface SignupDTO {
   name?: string;
   email: string;
+  phone?: string;
   username: string;
   orgName?: string;
   password: string;

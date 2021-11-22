@@ -41,6 +41,7 @@ export class DashboardSrv {
     return saveDashboard({
       dashboard: parsedJson,
       folderId: this.dashboard?.meta.folderId || parsedJson.folderId,
+      index: this.dashboard?.meta.index || parsedJson.index,
     });
   }
 

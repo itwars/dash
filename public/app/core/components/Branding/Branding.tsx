@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { css, cx } from '@emotion/css';
 import { useTheme2, styleMixins } from '@grafana/ui';
 import { colorManipulator } from '@grafana/data';
+import config from 'app/core/config';
 
 export interface BrandComponentProps {
   className?: string;
@@ -9,7 +10,7 @@ export interface BrandComponentProps {
 }
 
 const LoginLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src="public/img/grafana_icon.svg" alt="Grafana" />;
+  return <img className={className} src="public/img/custom/dashboard_icon.png" alt="Dashboard" />;
 };
 
 const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
@@ -42,7 +43,7 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 };
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src="public/img/grafana_icon.svg" alt="Grafana" />;
+  return <img className={className} src="public/img/custom/dashboard_icon.png" alt="Dashboard" />;
 };
 
 const LoginBoxBackground = () => {
@@ -58,8 +59,8 @@ export class Branding {
   static LoginBackground = LoginBackground;
   static MenuLogo = MenuLogo;
   static LoginBoxBackground = LoginBoxBackground;
-  static AppTitle = 'Grafana';
-  static LoginTitle = 'Welcome to Grafana';
+  static AppTitle = config.appTitle ? config.appTitle : 'Dashboard';
+  static LoginTitle = 'Welcome to ' + Branding.AppTitle;
   static GetLoginSubTitle = (): null | string => {
     return null;
   };

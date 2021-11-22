@@ -9,7 +9,6 @@ import appEvents from '../../app_events';
 import { ShowModalReactEvent } from '../../../types/events';
 import config from '../../config';
 import { OrgSwitcher } from '../OrgSwitcher';
-import { getFooterLinks } from '../Footer/Footer';
 import { HelpModal } from '../help/HelpModal';
 import NavBarItem from './NavBarItem';
 import { getForcedLoginUrl, isLinkActive, isSearchActive } from './utils';
@@ -54,7 +53,7 @@ export default function BottomSection() {
 
         if (link.id === 'help') {
           menuItems = [
-            ...getFooterLinks(),
+            // ...getFooterLinks(),
             {
               text: 'Keyboard shortcuts',
               icon: 'keyboard',

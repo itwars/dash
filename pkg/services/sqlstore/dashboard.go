@@ -100,6 +100,8 @@ func saveDashboard(sess *DBSession, cmd *models.SaveDashboardCommand) error {
 	var affectedRows int64
 	var err error
 
+	dash.Index = cmd.Index
+
 	if dash.Id == 0 {
 		dash.SetVersion(1)
 		dash.Created = time.Now()
@@ -119,7 +121,7 @@ func saveDashboard(sess *DBSession, cmd *models.SaveDashboardCommand) error {
 
 		dash.UpdatedBy = userId
 
-		affectedRows, err = sess.MustCols("folder_id").ID(dash.Id).Update(dash)
+		affectedRows, err = sess.MustCols("folder_id", "index").ID(dash.Id).Update(dash)
 	}
 
 	if err != nil {
@@ -265,6 +267,7 @@ type DashboardSearchProjection struct {
 	FolderSlug  string
 	FolderTitle string
 	SortMeta    int64
+	Index       int
 }
 
 func findDashboards(query *search.FindPersistedDashboardsQuery) ([]DashboardSearchProjection, error) {
@@ -367,6 +370,8 @@ func makeQueryResult(query *search.FindPersistedDashboardsQuery, res []Dashboard
 				ID:          item.ID,
 				UID:         item.UID,
 				Title:       item.Title,
+				Index:       item.Index,
+				Slug:        item.Slug,
 				URI:         "db/" + item.Slug,
 				URL:         models.GetDashboardFolderUrl(item.IsFolder, item.UID, item.Slug),
 				Type:        getHitType(item),

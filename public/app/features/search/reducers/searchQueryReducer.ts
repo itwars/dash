@@ -1,4 +1,4 @@
-import { DashboardQuery, SearchQueryParams, SearchAction, SearchLayout } from '../types';
+import { DashboardQuery, SearchQueryParams, SearchAction, SearchLayout, SearchQuery } from '../types';
 import {
   ADD_TAG,
   CLEAR_FILTERS,
@@ -23,10 +23,20 @@ export const defaultQuery: DashboardQuery = {
   prevSort: null,
 };
 
+export const defaultSearchQuery: SearchQuery = {
+  query: '',
+  page: 1,
+  perpage: 100,
+  folderIds: [],
+  layout: SearchLayout.Folders,
+};
+
 export const defaultQueryParams: SearchQueryParams = {
   sort: null,
   starred: null,
   query: null,
+  page: null,
+  perpage: null,
   tag: null,
   layout: null,
 };
@@ -62,6 +72,24 @@ export const queryReducer = (state: DashboardQuery, action: SearchAction) => {
         return { ...state, layout, sort: null, prevSort: state.sort };
       }
       return { ...state, layout, sort: state.prevSort };
+    }
+    default:
+      return state;
+  }
+};
+
+export const searchQueryReducer = (state: SearchQuery, action: SearchAction) => {
+  switch (action.type) {
+    case QUERY_CHANGE:
+      return { ...state, query: action.payload };
+    case CLEAR_FILTERS:
+      return { ...state, query: '' };
+    case LAYOUT_CHANGE: {
+      const layout = action.payload;
+      if (layout === SearchLayout.Folders) {
+        return { ...state, layout };
+      }
+      return { ...state, layout };
     }
     default:
       return state;

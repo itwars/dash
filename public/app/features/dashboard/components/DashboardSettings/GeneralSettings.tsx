@@ -32,7 +32,7 @@ export function GeneralSettingsUnconnected({ dashboard, updateTimeZone, updateWe
   };
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    dashboard[event.currentTarget.name as 'title' | 'description'] = event.currentTarget.value;
+    dashboard[event.currentTarget.name as 'title' | 'description' | 'index'] = event.currentTarget.value;
   };
 
   const onTooltipChange = (graphTooltip: number) => {
@@ -96,6 +96,9 @@ export function GeneralSettingsUnconnected({ dashboard, updateTimeZone, updateWe
         </Field>
         <Field label="Description">
           <Input id="description-input" name="description" onBlur={onBlur} defaultValue={dashboard.description} />
+        </Field>
+        <Field label="Sort Index">
+          <Input id="index-input" name="index" onBlur={onBlur} defaultValue={dashboard.index} />
         </Field>
         <Field label="Tags">
           <TagsInput tags={dashboard.tags} onChange={onTagsChange} />

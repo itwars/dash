@@ -1,0 +1,17 @@
+{
+  "type": "panel",
+  "name": "Button",
+  "id": "button",
+
+  "info": {
+    "description": "Button Panel for Grafana",
+    "author": {
+      "name": "Grafana Labs",
+      "url": "https://grafana.com"
+    },
+    "logos": {
+      "small": "img/icn-button-panel.svg",
+      "large": "img/icn-button-panel.svg"
+    }
+  }
+}

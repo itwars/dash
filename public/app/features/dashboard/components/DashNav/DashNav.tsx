@@ -6,7 +6,7 @@ import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
 // Components
 import { DashNavButton } from './DashNavButton';
 import { DashNavTimeControls } from './DashNavTimeControls';
-import { ButtonGroup, ModalsController, ToolbarButton, PageToolbar } from '@grafana/ui';
+import { ButtonGroup, ModalsController, ToolbarButton, CustomPageToolbar } from '@grafana/ui';
 import { locationUtil, textUtil } from '@grafana/data';
 // State
 import { updateTimeZoneForSession } from 'app/features/profile/state/reducers';
@@ -250,7 +250,7 @@ class DashNav extends PureComponent<Props> {
     const parentHref = locationUtil.updateSearchParams(window.location.href, '?search=open&folder=current');
 
     return (
-      <PageToolbar
+      <CustomPageToolbar
         pageIcon={isFullscreen ? undefined : 'apps'}
         title={title}
         parent={folderTitle}
@@ -260,7 +260,7 @@ class DashNav extends PureComponent<Props> {
         leftItems={this.renderLeftActionsButton()}
       >
         {this.renderRightActionsButton()}
-      </PageToolbar>
+      </CustomPageToolbar>
     );
   }
 }

@@ -21,7 +21,7 @@ export function getAppRoutes(): RouteDescriptor[] {
       pageClass: 'page-dashboard',
       routeName: DashboardRoutes.Home,
       component: SafeDynamicImport(
-        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/DashboardPage')
+        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/CustomDashboardPage')
       ),
     },
     {
@@ -29,7 +29,7 @@ export function getAppRoutes(): RouteDescriptor[] {
       pageClass: 'page-dashboard',
       routeName: DashboardRoutes.Normal,
       component: SafeDynamicImport(
-        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/DashboardPage')
+        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/CustomDashboardPage')
       ),
     },
     {
@@ -37,7 +37,7 @@ export function getAppRoutes(): RouteDescriptor[] {
       pageClass: 'page-dashboard',
       routeName: DashboardRoutes.Normal,
       component: SafeDynamicImport(
-        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/DashboardPage')
+        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/CustomDashboardPage')
       ),
     },
     {
@@ -47,7 +47,7 @@ export function getAppRoutes(): RouteDescriptor[] {
       // TODO[Router]
       //roles: () => (contextSrv.hasEditPermissionInFolders ? [contextSrv.user.orgRole] : ['Admin']),
       component: SafeDynamicImport(
-        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/DashboardPage')
+        () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/CustomDashboardPage')
       ),
     },
     {
@@ -182,6 +182,28 @@ export function getAppRoutes(): RouteDescriptor[] {
       ),
     },
     {
+      path: '/org/sites',
+      component: SafeDynamicImport(() => import(/* webpackChunkName: "SiteList" */ 'app/features/sites/SiteList')),
+    },
+    {
+      path: '/org/sites/new',
+      component: SafeDynamicImport(() => import(/* webpackChunkName: "CreateSite" */ 'app/features/sites/CreateSite')),
+    },
+    {
+      path: '/org/sites/edit/:id/:page?',
+      component: SafeDynamicImport(() => import(/* webpackChunkName: "SitePages" */ 'app/features/sites/SitePages')),
+    },
+    {
+      path: '/org/sites/:id/assets/new',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "CreateAsset" */ 'app/features/assets/CreateAsset')
+      ),
+    },
+    {
+      path: '/org/sites/:siteId/assets/edit/:id/:page?',
+      component: SafeDynamicImport(() => import(/* webpackChunkName: "AssetPages" */ 'app/features/assets/AssetPages')),
+    },
+    {
       path: '/org/teams',
       roles: () => (config.editorsCanAdmin ? [] : ['Editor', 'Admin']),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "TeamList" */ 'app/features/teams/TeamList')),
@@ -201,6 +223,30 @@ export function getAppRoutes(): RouteDescriptor[] {
       path: '/profile',
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "UserProfileEditPage" */ 'app/features/profile/UserProfileEditPage')
+      ),
+    },
+    {
+      path: '/org/useralarms',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "UserAlarmList" */ 'app/features/useralarms/UserAlarmList')
+      ),
+    },
+    {
+      path: '/org/useralarms/edit/:id/:page?',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "UserAlarmPages" */ 'app/features/useralarms/UserAlarmPages')
+      ),
+    },
+    {
+      path: '/site/useralarms/edit/:id/:page?',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "UserAlarmPages" */ 'app/features/useralarms/UserAlarmPages')
+      ),
+    },
+    {
+      path: '/asset/useralarms/edit/:id/:page?',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "UserAlarmPages" */ 'app/features/useralarms/UserAlarmPages')
       ),
     },
     {
@@ -259,6 +305,56 @@ export function getAppRoutes(): RouteDescriptor[] {
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "AdminEditOrgPage" */ 'app/features/admin/AdminEditOrgPage')
       ),
+    },
+    {
+      path: '/admin/sitetypes',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "SiteTypeList" */ 'app/features/sitetypes/SiteTypeList')
+      ),
+    },
+    {
+      path: '/admin/sitetypes/new',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "CreateSiteType" */ 'app/features/sitetypes/CreateSiteType')
+      ),
+    },
+    {
+      path: '/admin/sitetypes/edit/:id/:page?',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "SiteTypePages" */ 'app/features/sitetypes/SiteTypePages')
+      ),
+    },
+    {
+      path: '/admin/assettypes',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "AssetTypeList" */ 'app/features/assettypes/AssetTypeList')
+      ),
+    },
+    {
+      path: '/admin/assettypes/new',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "CreateAssetType" */ 'app/features/assettypes/CreateAssetType')
+      ),
+    },
+    {
+      path: '/admin/assettypes/edit/:id/:page?',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "AssetTypePages" */ 'app/features/assettypes/AssetTypePages')
+      ),
+    },
+    {
+      path: '/admin/alarms',
+      component: SafeDynamicImport(() => import(/* webpackChunkName: "AlarmList" */ 'app/features/alarms/AlarmList')),
+    },
+    {
+      path: '/admin/alarms/new',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "CreateAlarm" */ 'app/features/alarms/CreateAlarm')
+      ),
+    },
+    {
+      path: '/admin/alarms/edit/:id/:page?',
+      component: SafeDynamicImport(() => import(/* webpackChunkName: "AlarmPages" */ 'app/features/alarms/AlarmPages')),
     },
     {
       path: '/admin/stats',

@@ -49,6 +49,7 @@ export interface LocationUpdate {
  * @public
  */
 export interface LocationSrv {
+  getLocationQuery(): UrlQueryMap;
   update(options: LocationUpdate): void;
 }
 

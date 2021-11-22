@@ -46,6 +46,7 @@ const selectOptions = [
 interface FormDTO {
   name?: string;
   email?: string;
+  phone?: string;
   username?: string;
   checkbox?: boolean;
   switch: boolean;
@@ -75,6 +76,16 @@ const renderForm = (defaultValues?: FormDTO) => (
 
           <Field label="Email" invalid={!!errors.email} error="E-mail is required">
             <Input {...register('email', { required: true })} id="email" placeholder="roger.waters@grafana.com" />
+          </Field>
+
+          <Field label="Phone" invalid={!!errors.phone} error="Phone is required">
+            <Input
+              {...register('phone', { required: true })}
+              id="phone"
+              type="tel"
+              placeholder="+(country code)(10 digits)"
+              pattern="\+[0-9]{2,3}[0-9]{10}"
+            />
           </Field>
 
           <Field label="Username">

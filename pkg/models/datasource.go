@@ -35,7 +35,6 @@ type DsAccess string
 
 type DataSource struct {
 	Id      int64 `json:"id"`
-	OrgId   int64 `json:"orgId"`
 	Version int   `json:"version"`
 
 	Name              string            `json:"name"`

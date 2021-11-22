@@ -184,6 +184,8 @@ export interface GrafanaTheme extends GrafanaThemeCommons {
     online: string;
     warn: string;
     critical: string;
+    major: string;
+    minor: string;
   };
   colors: {
     bg1: string;
@@ -206,6 +208,7 @@ export interface GrafanaTheme extends GrafanaThemeCommons {
     dropdownBg: string;
     dropdownShadow: string;
     dropdownOptionHoverBg: string;
+    tableHoverBg: string;
 
     // Link colors
     link: string;

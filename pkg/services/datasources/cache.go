@@ -37,9 +37,7 @@ func (dc *CacheServiceImpl) GetDatasource(
 	if !skipCache {
 		if cached, found := dc.CacheService.Get(cacheKey); found {
 			ds := cached.(*models.DataSource)
-			if ds.OrgId == user.OrgId {
-				return ds, nil
-			}
+			return ds, nil
 		}
 	}
 
@@ -54,7 +52,7 @@ func (dc *CacheServiceImpl) GetDatasource(
 	ds := query.Result
 
 	if ds.Uid != "" {
-		dc.CacheService.Set(uidKey(ds.OrgId, ds.Uid), ds, time.Second*5)
+		dc.CacheService.Set(uidKey(0, ds.Uid), ds, time.Second*5)
 	}
 	dc.CacheService.Set(cacheKey, ds, time.Second*5)
 	return ds, nil
@@ -71,14 +69,12 @@ func (dc *CacheServiceImpl) GetDatasourceByUID(
 	if user.OrgId == 0 {
 		return nil, fmt.Errorf("can not get data source by uid, orgId is missing")
 	}
-	uidCacheKey := uidKey(user.OrgId, datasourceUID)
+	uidCacheKey := uidKey(0, datasourceUID)
 
 	if !skipCache {
 		if cached, found := dc.CacheService.Get(uidCacheKey); found {
 			ds := cached.(*models.DataSource)
-			if ds.OrgId == user.OrgId {
-				return ds, nil
-			}
+			return ds, nil
 		}
 	}
 

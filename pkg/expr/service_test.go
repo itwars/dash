@@ -27,7 +27,7 @@ func TestService(t *testing.T) {
 	}
 	s := Service{DataService: me}
 	bus.AddHandler("test", func(query *models.GetDataSourceQuery) error {
-		query.Result = &models.DataSource{Id: 1, OrgId: 1, Type: "test"}
+		query.Result = &models.DataSource{Id: 1, Type: "test"}
 		return nil
 	})
 

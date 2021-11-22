@@ -196,6 +196,8 @@ export function createV1Theme(theme: Omit<GrafanaTheme2, 'v1'>): GrafanaTheme {
       online: theme.colors.success.main,
       warn: theme.colors.success.main,
       critical: theme.colors.success.main,
+      major: basicColors.orange,
+      minor: basicColors.yellow,
     },
     colors: {
       ...backgrounds,
@@ -212,6 +214,7 @@ export function createV1Theme(theme: Omit<GrafanaTheme2, 'v1'>): GrafanaTheme {
       dropdownBg: form.formInputBg,
       dropdownShadow: basicColors.black,
       dropdownOptionHoverBg: backgrounds.bg2,
+      tableHoverBg: backgrounds.bg3,
 
       link: theme.colors.text.primary,
       linkDisabled: theme.colors.text.disabled,

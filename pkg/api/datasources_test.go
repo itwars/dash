@@ -173,7 +173,6 @@ func TestAPI_Datasources_AccessControl(t *testing.T) {
 	testDatasource := models.DataSource{
 		Id:     3,
 		Uid:    "testUID",
-		OrgId:  testOrgID,
 		Name:   "test",
 		Url:    "http://localhost:5432",
 		Type:   "postgresql",
@@ -182,7 +181,6 @@ func TestAPI_Datasources_AccessControl(t *testing.T) {
 	getDatasourceStub := func(query *models.GetDataSourceQuery) error {
 		result := testDatasource
 		result.Id = query.Id
-		result.OrgId = query.OrgId
 		query.Result = &result
 		return nil
 	}

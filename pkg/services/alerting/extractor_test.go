@@ -18,10 +18,10 @@ func TestAlertRuleExtraction(t *testing.T) {
 	})
 
 	// mock data
-	defaultDs := &models.DataSource{Id: 12, OrgId: 1, Name: "I am default", IsDefault: true}
-	graphite2Ds := &models.DataSource{Id: 15, OrgId: 1, Name: "graphite2"}
-	influxDBDs := &models.DataSource{Id: 16, OrgId: 1, Name: "InfluxDB"}
-	prom := &models.DataSource{Id: 17, OrgId: 1, Name: "Prometheus"}
+	defaultDs := &models.DataSource{Id: 12, Name: "I am default", IsDefault: true}
+	graphite2Ds := &models.DataSource{Id: 15, Name: "graphite2"}
+	influxDBDs := &models.DataSource{Id: 16, Name: "InfluxDB"}
+	prom := &models.DataSource{Id: 17, Name: "Prometheus"}
 
 	bus.AddHandler("test", func(query *models.GetDefaultDataSourceQuery) error {
 		query.Result = defaultDs

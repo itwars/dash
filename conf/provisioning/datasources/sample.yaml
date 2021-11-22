@@ -1,54 +1,25 @@
-# # config file version
-apiVersion: 1
+apiVersion: 2
 
-# # list of datasources that should be deleted from the database
-#deleteDatasources:
-#   - name: Graphite
-#     orgId: 1
+datasources:
+- name: Dataservice
+  type: dataservice
+  access: proxy
+  url: ${DS_DATASERVICE_URL}
+  withCredentials: true
+  jsonData:
+     httpHeaderName1: "Authorization"
+  secureJsonData:
+    httpHeaderValue1: ${DS_DATASERVICE_AUTH_HEADER}
+  version: 2
+  editable: false
 
-# # list of datasources to insert/update depending
-# # on what's available in the database
-#datasources:
-#   # <string, required> name of the datasource. Required
-# - name: Graphite
-#   # <string, required> datasource type. Required
-#   type: graphite
-#   # <string, required> access mode. direct or proxy. Required
-#   access: proxy
-#   # <int> org id. will default to orgId 1 if not specified
-#   orgId: 1
-#   # <string> url
-#   url: http://localhost:8080
-#   # <string> database password, if used
-#   password:
-#   # <string> database user, if used
-#   user:
-#   # <string> database name, if used
-#   database:
-#   # <bool> enable/disable basic auth
-#   basicAuth:
-#   # <string> basic auth username
-#   basicAuthUser:
-#   # <string> basic auth password
-#   basicAuthPassword:
-#   # <bool> enable/disable with credentials headers
-#   withCredentials:
-#   # <bool> mark as default datasource. Max one per org
-#   isDefault:
-#   # <map> fields that will be converted to json and stored in json_data
-#   jsonData:
-#      graphiteVersion: "1.1"
-#      tlsAuth: true
-#      tlsAuthWithCACert: true
-#      httpHeaderName1: "Authorization"
-#   # <string> json object of data that will be encrypted.
-#   secureJsonData:
-#     tlsCACert: "..."
-#     tlsClientCert: "..."
-#     tlsClientKey: "..."
-#     # <openshift\kubernetes token example>
-#     httpHeaderValue1: "Bearer xf5yhfkpsnmgo"
-#   version: 1
-#   # <bool> allow users to edit datasources from the UI.
-#   editable: false
+- name: Influxservice
+  type: influxdb
+  access: proxy
+  url: ${DS_INFLUXDB_URL}
+  password: ${DS_INFLUXDB_PWD}
+  user: ${DS_INFLUXDB_USER}
+  database: ${APP_NAME}
+  version: 2
+  editable: false
 

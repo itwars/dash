@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/grafana/grafana/pkg/api/datasource"
 	"github.com/grafana/grafana/pkg/api/pluginproxy"
+	"github.com/grafana/grafana/pkg/bus"
 	"github.com/grafana/grafana/pkg/infra/httpclient"
 	"github.com/grafana/grafana/pkg/infra/metrics"
 	"github.com/grafana/grafana/pkg/models"
@@ -66,6 +68,43 @@ func (p *DataSourceProxyService) ProxyDatasourceRequestWithID(c *models.ReqConte
 	if err != nil {
 		c.JsonApiErr(http.StatusForbidden, "Access denied", err)
 		return
+	}
+
+	siteId := int64(0)
+	siteIdHeader := c.Req.Header.Get("Site-Id")
+	if siteIdHeader != "" {
+		siteId, _ = strconv.ParseInt(siteIdHeader, 10, 64)
+	}
+
+	assetId := int64(0)
+	assetIdHeader := c.Req.Header.Get("Asset-Id")
+	if assetIdHeader != "" {
+		assetId, _ = strconv.ParseInt(assetIdHeader, 10, 64)
+	}
+
+	if ((siteId != 0 || assetId != 0) && (ds.Type == "dataservice")) ||
+		((siteId != 0 || assetId != 0) && (ds.Type == models.DS_INFLUXDB || ds.Type == models.DS_INFLUXDB_08)) {
+
+		permission := models.GetPermissionLevel(c.OrgRole)
+		if c.IsGrafanaAdmin == true {
+			permission = models.PERMISSIONLEVEL_GRAFANAADMIN
+		}
+
+		access := models.SiteAccessMsg{
+			OrgId:           c.OrgId,
+			UserId:          c.UserId,
+			SiteId:          siteId,
+			PermissionLevel: permission,
+		}
+		if err := bus.Dispatch(&access); err != nil {
+			c.JsonApiErr(500, "site access failed", err)
+			return
+		}
+
+		if access.Result == false {
+			c.JsonApiErr(403, " site access denied", nil)
+			return
+		}
 	}
 
 	// find plugin

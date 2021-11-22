@@ -1,7 +1,17 @@
 import { parse, SearchParserResult } from 'search-query-parser';
 import { IconName } from '@grafana/ui';
 import { UrlQueryMap } from '@grafana/data';
-import { DashboardQuery, DashboardSection, DashboardSectionItem, SearchAction, UidsToDelete } from './types';
+import {
+  AssetSection,
+  DashboardQuery,
+  DashboardSection,
+  DashboardSectionItem,
+  SearchAction,
+  SearchQuery,
+  SiteSection,
+  TeamSection,
+  UidsToDelete,
+} from './types';
 import { NO_ID_SECTIONS, SECTION_STORAGE_KEY } from './constants';
 import { getDashboardSrv } from '../dashboard/services/DashboardSrv';
 
@@ -51,6 +61,14 @@ export const getLookupField = (title: string) => {
 };
 
 /**
+ * If id not found, name field is used as id
+ * @param name - name field of the section
+ */
+export const getLookup = (name: string) => {
+  return hasId(name) ? 'id' : 'name';
+};
+
+/**
  * Go through all the folders and items in expanded folders and toggle their selected
  * prop according to currently selected index. Used for item highlighting when navigating
  * the search results list using keyboard arrows
@@ -95,6 +113,48 @@ export const findSelected = (sections: any): DashboardSection | DashboardSection
     }
   }
 
+  return null;
+};
+
+/**
+ * Find assets with property 'selected' set true in a list of sites and their assets.
+ * Does recursive search in the assets list.
+ * @param sections
+ */
+export const findSiteSelected = (sections: any): SiteSection | AssetSection | null => {
+  let found = null;
+  for (const section of sections) {
+    if (section.expanded && section.assets.length) {
+      found = findSiteSelected(section.assets);
+    }
+    if (section.selected) {
+      found = section;
+    }
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+};
+
+/**
+ * Find sites with property 'selected' set true in a list of teams and their sites.
+ * Does recursive search in the sites list.
+ * @param sections
+ */
+export const findTeamSelected = (sections: any): TeamSection | null => {
+  let found = null;
+  for (const section of sections) {
+    if (section.expanded && section.sites.length) {
+      found = findTeamSelected(section.sites);
+    }
+    if (section.selected) {
+      found = section;
+    }
+    if (found) {
+      return found;
+    }
+  }
   return null;
 };
 
@@ -201,6 +261,31 @@ export const getParsedQuery = (query: DashboardQuery, queryParsing = false) => {
 };
 
 /**
+ * @param query
+ * @param queryParsing
+ */
+export const getParsedSearchQuery = (query: SearchQuery, queryParsing = false) => {
+  const parsedQuery = { ...query };
+  if (!queryParsing) {
+    return parsedQuery;
+  }
+
+  let folderIds: number[] = [];
+
+  if (parseQuery(query.query).folder === 'current') {
+    try {
+      const dash = getDashboardSrv().getCurrent();
+      if (dash?.meta.folderId) {
+        folderIds = [dash?.meta.folderId];
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  return { ...parsedQuery, query: parseQuery(query.query).text as string, folderIds };
+};
+
+/**
  * Check if search query has filters enabled. Excludes folderId
  * @param query
  */
@@ -209,6 +294,17 @@ export const hasFilters = (query: DashboardQuery) => {
     return false;
   }
   return Boolean(query.query || query.tag?.length > 0 || query.starred || query.sort);
+};
+
+/**
+ * Check if search query has filters enabled. Excludes folderId
+ * @param query
+ */
+export const hasCustomFilters = (query: SearchQuery) => {
+  if (!query) {
+    return false;
+  }
+  return Boolean(query.query);
 };
 
 /**

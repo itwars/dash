@@ -9,6 +9,70 @@ export enum DashboardSearchItemType {
   DashFolder = 'dash-folder',
 }
 
+export enum SearchItemType {
+  DashDB = 'dash-db',
+  DashHome = 'dash-home',
+  DashFolder = 'dash-folder',
+}
+
+export interface SiteSection {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  itemType: SearchItemType;
+  alarmCount: number;
+  icon?: string;
+  itemsFetching?: boolean;
+  expanded?: boolean;
+  selected?: boolean;
+  url: string;
+  assets: AssetSection[];
+  page: number;
+  perpage: number;
+}
+
+export interface TeamSection {
+  id: number;
+  name: string;
+  itemType: SearchItemType;
+  itemsFetching?: boolean;
+  expanded?: boolean;
+  selected?: boolean;
+  avatarUrl: string;
+  sites: SiteSection[];
+  page: number;
+  perpage: number;
+}
+
+export interface AssetSection {
+  id: number;
+  name: string;
+  serial: string;
+  description: string;
+  type: string;
+  alarmCount: number;
+  itemType: SearchItemType;
+  icon?: string;
+  selected?: boolean;
+  url: string;
+}
+export interface QueryResult {
+  page: number;
+  perPage: number;
+  totalCount: number;
+  data: any[];
+  teams: any[];
+}
+
+export interface SearchQuery {
+  query: string;
+  page: number;
+  perpage: number;
+  folderIds: number[];
+  layout: SearchLayout;
+}
+
 export interface DashboardSection {
   id: number;
   uid?: string;
@@ -87,9 +151,31 @@ export type UseSearch = <S>(
   params: UseSearchParams
 ) => { state: S; dispatch: Dispatch<SearchAction>; onToggleSection: (section: DashboardSection) => void };
 
+export type UseSiteSearch = <S>(
+  query: SearchQuery,
+  reducer: SearchReducer<S>,
+  params: UseSearchParams
+) => {
+  state: S;
+  dispatch: Dispatch<SearchAction>;
+  onToggleSiteSection: (section: SiteSection) => void;
+};
+
+export type UseTeamSearch = <S>(
+  query: SearchQuery,
+  reducer: SearchReducer<S>,
+  params: UseSearchParams
+) => {
+  state: S;
+  dispatch: Dispatch<SearchAction>;
+  onToggleTeamSection: (section: TeamSection) => void;
+};
+
 export type OnToggleChecked = (item: DashboardSectionItem | DashboardSection) => void;
 export type OnDeleteItems = (folders: string[], dashboards: string[]) => void;
 export type OnMoveItems = (selectedDashboards: DashboardSectionItem[], folder: FolderInfo | null) => void;
+export type OnToggleSiteChecked = (item: SiteSection) => void;
+export type OnToggleTeamChecked = (item: TeamSection) => void;
 
 export enum SearchLayout {
   List = 'list',
@@ -103,4 +189,6 @@ export interface SearchQueryParams {
   tag?: string[] | null;
   layout?: SearchLayout | null;
   folder?: string | null;
+  page?: number | null;
+  perpage?: number | null;
 }

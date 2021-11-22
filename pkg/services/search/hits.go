@@ -16,6 +16,7 @@ type Hit struct {
 	Title        string   `json:"title"`
 	URI          string   `json:"uri"`
 	URL          string   `json:"url"`
+	Index        int      `json:"index"`
 	Slug         string   `json:"slug"`
 	Type         HitType  `json:"type"`
 	Tags         []string `json:"tags"`

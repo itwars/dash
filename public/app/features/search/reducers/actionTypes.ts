@@ -22,3 +22,12 @@ export const SET_TAGS = 'SET_TAGS';
 export const ADD_TAG = 'ADD_TAG';
 export const TOGGLE_SORT = 'TOGGLE_SORT';
 export const LAYOUT_CHANGE = 'LAYOUT_CHANGE';
+
+// Custom Search
+export const FETCH_SITES = 'FETCH_SITES';
+export const FETCH_ASSETS = 'FETCH_ASSETS';
+export const FETCH_TEAMS = 'FETCH_TEAMS';
+export const TOGGLE_SITE_SECTION = 'TOGGLE_SITE_SECTION';
+export const TOGGLE_TEAM_SECTION = 'TOGGLE_TEAM_SECTION';
+export const FETCH_ASSETS_START = 'FETCH_ASSETS_START';
+export const FETCH_SITES_START = 'FETCH_SITES_START';

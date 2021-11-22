@@ -1,0 +1,271 @@
+version: '3.5'
+services:
+  emqx:
+    restart: unless-stopped
+    image: emqx/emqx:v4.1.4-alpine-amd64
+    ports:
+      - '18083:18083'
+      - '1883:1883'
+      - '8083:8083'
+    environment:
+      - EMQX_NAME=emqx
+      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_AUTH__HTTP__AUTH_REQ__CONTENT_TYPE=json
+      - EMQX_AUTH__HTTP__AUTH_REQ__METHOD=post
+      - EMQX_AUTH__HTTP__AUTH_REQ=http://writerservice:10000/api/mqtt/auth
+      - EMQX_AUTH__HTTP__SUPER_REQ__CONTENT_TYPE=json
+      - EMQX_AUTH__HTTP__SUPER_REQ__METHOD=post
+      - EMQX_AUTH__HTTP__SUPER_REQ=http://writerservice:10000/api/mqtt/superuser
+      - EMQX_AUTH__HTTP__ACL_REQ__CONTENT_TYPE=json
+      - EMQX_AUTH__HTTP__ACL_REQ__METHOD=get
+      - EMQX_AUTH__HTTP__ACL_REQ=http://writerservice:10000/api/mqtt/acl
+      - EMQX_LOADED_PLUGINS="emqx_management,emqx_auth_http,emqx_recon,emqx_retainer,emqx_dashboard,emqx_web_hook"
+    volumes:
+      - emqx-etc:/opt/emqx/etc
+      - emqx-data:/opt/emqx/data
+      - emqx-log:/opt/emqx/log
+      - emqx-lib:/opt/emqx/lib
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx_ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      - dashboard-network
+  influx:
+    restart: always
+    image: 'influxdb:latest'
+    ports:
+      - '8086:8086'
+      - '8084:8083'
+    volumes:
+      - influx-data:/var/lib/influxdb2
+    healthcheck:
+      test: "curl -f http://localhost:8086/ping"
+      interval: 3s
+      timeout: 10s
+      retries: 5
+    environment:
+      - DOCKER_INFLUXDB_INIT_USERNAME=influx
+      - DOCKER_INFLUXDB_INIT_PASSWORD=Qwertyu10P
+      - DOCKER_INFLUXDB_INIT_ORG=nxtthinq
+      - DOCKER_INFLUXDB_INIT_BUCKET=dashboard
+    networks:
+      - dashboard-network
+  redis:
+    restart: always
+    image: 'redis:latest'
+    command: redis-server --requirepass Qwertyu10P
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - '6379:6379'
+    networks:
+      - dashboard-network
+  postgres:
+    restart: always
+    image: 'postgres:latest'
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=dashboard
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Qwertyu10P
+    networks:
+      - dashboard-network
+  writerservice:
+    restart: always
+    image: 'jayarajesvar/writerservice'
+    ports:
+      - '10000:10000'
+      - '10001:10001'
+    depends_on:
+      - postgres
+      - influx
+      - redis
+      - dashboard
+      - emqx
+    environment:
+      - MS_APPLICATION=dashboard
+      - MS_HTTP=10000
+      - MS_GRPC=10001
+      - MS_MODE=dev
+      - MS_REDIS=redis:6379
+      - MS_REDISPASSWORD=Qwertyu10P
+      - MS_POSTGRES_HOST=postgres
+      - MS_POSTGRES_PORT=5432
+      - MS_POSTGRES_DBNAME=dashboard
+      - MS_POSTGRES_USERNAME=postgres
+      - MS_POSTGRES_PASSWORD=Qwertyu10P
+      - MS_POSTGRES_SSLMODE=disable
+      - 'MS_MQTT=[{"name":"clodpi-lorawan", "url": "tcp://console.clodpi.io:1883", "username":"karthi", "secret":"245756c0d49d04f77d1fcda88732d5c55e0417a0", "prefix":"116"}, {"name":"edge", "url":"tcp://emqx:1883", "username":"any", "secret":"any"}]'
+      - MS_INFLUX_DBNAME=dashboard
+      - MS_INFLUX_HOST=influx
+      - MS_INFLUX_PORT=8086
+      - MS_INFLUX_USERNAME=influx
+      - MS_INFLUX_PASSWORD=Qwertyu10P
+      - MS_INFLUX_MINBATCHPOINTS=100
+      - MS_INFLUX_WRITEFREQUENCY=1
+      - MS_INFLUX_ORG=nxtthinq
+      - MS_INFLUX_TOKEN=2BXB0aFf8uBk20UK-uVoH70dHIK-202MK0pvh6rE4Y08OXYL2hClzapdXqJEqFY32ssQueBaX5L-EsCW1RcTyg==
+    networks:
+      - dashboard-network
+  readerservice:
+    restart: always
+    image: 'jayarajesvar/readerservice'
+    ports:
+      - '10002:10002'
+      - '10003:10003'
+    depends_on:
+      - postgres
+      - influx
+      - redis
+      - dashboard
+      - emqx
+    environment:
+      - MS_APPLICATION=dashboard
+      - MS_HTTP=10002
+      - MS_GRPC=10003
+      - MS_MODE=dev
+      - MS_REDIS=redis:6379
+      - MS_REDISPASSWORD=Qwertyu10P
+      - MS_POSTGRES_HOST=postgres
+      - MS_POSTGRES_PORT=5432
+      - MS_POSTGRES_DBNAME=dashboard
+      - MS_POSTGRES_USERNAME=postgres
+      - MS_POSTGRES_PASSWORD=Qwertyu10P
+      - MS_POSTGRES_SSLMODE=disable
+      - MS_INFLUX_DBNAME=dashboard
+      - MS_INFLUX_HOST=influx
+      - MS_INFLUX_USERNAME=influx
+      - MS_INFLUX_PASSWORD=Qwertyu10P
+      - MS_INFLUX_MINBATCHPOINTS=100
+      - MS_INFLUX_WRITEFREQUENCY=1
+      - MS_INFLUX_ORG=nxtthinq
+      - MS_INFLUX_TOKEN=2BXB0aFf8uBk20UK-uVoH70dHIK-202MK0pvh6rE4Y08OXYL2hClzapdXqJEqFY32ssQueBaX5L-EsCW1RcTyg==
+    networks:
+      - dashboard-network
+  streetlightservice:
+    restart: always
+    image: 'jayarajesvar/streetlightservice'
+    ports:
+      - '10004:10004'
+      - '10005:10005'
+    depends_on:
+      - postgres
+      - influx
+      - redis
+      - dashboard
+      - emqx
+    environment:
+      - MS_APPLICATION=dashboard
+      - MS_HTTP=10004
+      - MS_GRPC=10005
+      - MS_MODE=dev
+      - MS_REDIS=redis:6379
+      - MS_REDISPASSWORD=Qwertyu10P
+      - MS_POSTGRES_HOST=postgres
+      - MS_POSTGRES_PORT=5432
+      - MS_POSTGRES_DBNAME=dashboard
+      - MS_POSTGRES_USERNAME=postgres
+      - MS_POSTGRES_PASSWORD=Qwertyu10P
+      - MS_POSTGRES_SSLMODE=disable
+      - MS_LORA_NAME=clodpi-lorawan
+      - MS_LORA_LAMPQUERYINMINS=31
+      - MS_LORA_LAMPENERGYQUERYINMINS=33
+      - MS_LORA_LAMPTIMEUPDATEINMINS=35
+      - MS_WRITERSERVICE_HOST=writerservice
+      - MS_WRITERSERVICE_PORT=10001
+    networks:
+      - dashboard-network
+  dashboard:
+    restart: always
+    image: 'jayarajesvar/dashboard'
+    ports:
+      - '3000:3000'
+      - '80:3000'
+      - '443:3000'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f localhost:3000/api/health && echo 'ready'"]
+      interval: 15s
+      retries: 30
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - GF_PATHS_CONFIG=/etc/dashboard/default.ini
+      - GF_PATHS_DATA=/var/lib/dashboard
+      - GF_PATHS_HOME=/usr/share/dashboard
+      - GF_PATHS_LOGS=/var/log/dashboard
+      - GF_PATHS_PLUGINS=/var/lib/dashboard/plugins
+      - GF_PATHS_PROVISIONING=/etc/dashboard/provisioning
+      - DS_DATASERVICE_URL=http://readerservice:10002
+      - DS_DATASERVICE_AUTH_HEADER=Bearer 1234
+      - DS_INFLUXDB_URL=http://influx:8086
+      - DS_INFLUXDB_USER=influx
+      - DS_INFLUXDB_PWD=Qwertyu10P
+      - APP_NAME=dashboard
+      - APP_PROTOCOL=http
+      - APP_PORT=3000
+      - GOOGLE_CLIENT_ID=563903188303-pt5udg56qq2fgvkr0443bqj68n55t2e8.apps.googleusercontent.com
+      - GOOGLE_SECRET=7S41-oea3Qc_Lu2U6byQZOVM
+      - APP_CERTFILE=
+      - APP_CERTKEY=
+      - APP_URL=localhost
+      - APP_SECRET=1234
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DBNAME=dashboard
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Qwertyu10P
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=Qwertyu10P
+      - WRITER_SERVICE=writerservice
+      - WRITER_SERVICE_PORT=10000
+      - READER_SERVICE=writerservice
+      - READER_SERVICE_PORT=10002
+      - SMTP_HOST="smtp.mailgun.org:587"
+      - SMTP_USER=postmaster@elnetty.com
+      - SMTP_PWD=c712e7b5867212df6a8dc3af095fd30f
+      - SMTP_FROM=jayaraj.esvar@nxtthinq.com
+      - SMTP_FROMNAME=Dashboard
+      - ADMIN_USERNAME=admin
+      - ADMIN_SECRET=Qwertyu10P
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - dashboard-data:/var/lib/dashboard
+      - dashboard-prov:/etc/dashboard
+      - dashboard-log:/var/log/dashboard
+      - dashboard-home:/usr/share/dashboard
+    networks:
+      - dashboard-network
+
+volumes:
+  postgres-data:
+  redis-data:
+  dashboard-data:
+  dashboard-home:
+  dashboard-log:
+  dashboard-prov:
+  emqx-etc:
+  emqx-data:
+  emqx-log:
+  emqx-lib:
+  influx-data:
+networks:
+  dashboard-network:
+    name: dashboard
+    driver: bridge

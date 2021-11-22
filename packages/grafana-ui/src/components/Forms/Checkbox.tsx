@@ -50,7 +50,7 @@ export const getCheckboxStyles = stylesFactory((theme: GrafanaTheme2) => {
   return {
     wrapper: css`
       position: relative;
-      vertical-align: middle;
+      vertical-align: text-top;
       font-size: 0;
     `,
     input: css`

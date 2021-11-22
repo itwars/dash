@@ -61,7 +61,12 @@ scripts/go/bin/bra: scripts/go/go.mod
 	$(GO) build -o ./bin/bra github.com/unknwon/bra
 
 run: scripts/go/bin/bra ## Build and run web server on filesystem changes.
-	@scripts/go/bin/bra run
+	@APP_NAME="dashboard" APP_SLOGAN="IoT Platform" APP_MODE="development" APP_PROTOCOL="http" APP_PORT=3000 APP_DOMAIN="localhost" POSTGRES_HOST="localhost" \
+	POSTGRES_PORT=5432 POSTGRES_DBNAME="dashboard" POSTGRES_USER="postgres" POSTGRES_PASSWORD="Qwertyu10P" SERVICE_PROTOCOL="http" READER_DOMAIN="localhost" READER_PORT=9000 \
+	WRITER_DOMAIN="localhost" WRITER_PORT=10000 NOTIFICATION_DOMAIN="notification" NOTIFICATION_PORT=9004 REPORT_DOMAIN="report" REPORT_PORT=9006 REDIS_HOST="localhost" REDIS_PORT=6379 \
+	DS_DATASERVICE_URL="http://localhost:9000" ADMIN_USERNAME="admin" ADMIN_SECRET="admin" SMTP_HOST="smtp-relay.sendinblue.com:587" SMTP_USER="jayaraj.esvar@nxtthinq.com" SMTP_PWD="UM4zVsWf7GnPrNq0" SMTP_FROM="jayaraj.esvar@nxtthinq.com" \
+	SMTP_FROMNAME="Dashboard" GOOGLE_CLIENT_ID="563903188303-pt5udg56qq2fgvkr0443bqj68n55t2e8.apps.googleusercontent.com" GOOGLE_SECRET="7S41-oea3Qc_Lu2U6byQZOVM" GOOGLE_ALLOWED_DOMAIN=localhost \
+	scripts/go/bin/bra run
 
 run-frontend: deps-js ## Fetch js dependencies and watch frontend for rebuild
 	yarn start

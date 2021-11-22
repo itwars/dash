@@ -112,6 +112,7 @@ export interface UserProps {
   login: string;
   id: number;
   email?: string;
+  phone?: string;
   toString: () => string;
 }
 

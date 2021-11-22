@@ -20,11 +20,11 @@ func (ss *SQLStore) GetDataSource(ctx context.Context, query *models.GetDataSour
 	metrics.MDBDataSourceQueryByID.Inc()
 
 	return ss.WithDbSession(ctx, func(sess *DBSession) error {
-		if query.OrgId == 0 || (query.Id == 0 && len(query.Name) == 0 && len(query.Uid) == 0) {
+		if query.Id == 0 && len(query.Name) == 0 && len(query.Uid) == 0 {
 			return models.ErrDataSourceIdentifierNotSet
 		}
 
-		datasource := &models.DataSource{Name: query.Name, OrgId: query.OrgId, Id: query.Id, Uid: query.Uid}
+		datasource := &models.DataSource{Name: query.Name, Id: query.Id, Uid: query.Uid}
 		has, err := sess.Get(datasource)
 
 		if err != nil {
@@ -43,9 +43,9 @@ func (ss *SQLStore) GetDataSource(ctx context.Context, query *models.GetDataSour
 func (ss *SQLStore) GetDataSources(query *models.GetDataSourcesQuery) error {
 	var sess *xorm.Session
 	if query.DataSourceLimit <= 0 {
-		sess = x.Where("org_id=?", query.OrgId).Asc("name")
+		sess = x.Asc("name")
 	} else {
-		sess = x.Limit(query.DataSourceLimit, 0).Where("org_id=?", query.OrgId).Asc("name")
+		sess = x.Limit(query.DataSourceLimit, 0).Asc("name")
 	}
 
 	query.Result = make([]*models.DataSource, 0)
@@ -66,7 +66,7 @@ func (ss *SQLStore) GetDataSourcesByType(query *models.GetDataSourcesByTypeQuery
 func (ss *SQLStore) GetDefaultDataSource(query *models.GetDefaultDataSourceQuery) error {
 	datasource := models.DataSource{}
 
-	exists, err := x.Where("org_id=? AND is_default=?", query.OrgId, true).Get(&datasource)
+	exists, err := x.Where("is_default=?", true).Get(&datasource)
 
 	if !exists {
 		return models.ErrDataSourceNotFound
@@ -90,11 +90,11 @@ func (ss *SQLStore) DeleteDataSource(ctx context.Context, cmd *models.DeleteData
 	case cmd.OrgID == 0:
 		return models.ErrDataSourceIdentifierNotSet
 	case cmd.UID != "":
-		makeQuery("DELETE FROM data_source WHERE uid=? and org_id=?", cmd.UID, cmd.OrgID)
+		makeQuery("DELETE FROM data_source WHERE uid=?", cmd.UID)
 	case cmd.ID != 0:
-		makeQuery("DELETE FROM data_source WHERE id=? and org_id=?", cmd.ID, cmd.OrgID)
+		makeQuery("DELETE FROM data_source WHERE id=?", cmd.ID)
 	case cmd.Name != "":
-		makeQuery("DELETE FROM data_source WHERE name=? and org_id=?", cmd.Name, cmd.OrgID)
+		makeQuery("DELETE FROM data_source WHERE name=?", cmd.Name)
 	default:
 		return models.ErrDataSourceIdentifierNotSet
 	}
@@ -117,7 +117,7 @@ func (ss *SQLStore) DeleteDataSource(ctx context.Context, cmd *models.DeleteData
 
 func (ss *SQLStore) AddDataSource(ctx context.Context, cmd *models.AddDataSourceCommand) error {
 	return ss.WithTransactionalDbSession(ctx, func(sess *DBSession) error {
-		existing := models.DataSource{OrgId: cmd.OrgId, Name: cmd.Name}
+		existing := models.DataSource{Name: cmd.Name}
 		has, _ := sess.Get(&existing)
 
 		if has {
@@ -137,7 +137,6 @@ func (ss *SQLStore) AddDataSource(ctx context.Context, cmd *models.AddDataSource
 		}
 
 		ds := &models.DataSource{
-			OrgId:             cmd.OrgId,
 			Name:              cmd.Name,
 			Type:              cmd.Type,
 			Access:            cmd.Access,
@@ -185,8 +184,8 @@ func (ss *SQLStore) AddDataSource(ctx context.Context, cmd *models.AddDataSource
 func updateIsDefaultFlag(ds *models.DataSource, sess *DBSession) error {
 	// Handle is default flag
 	if ds.IsDefault {
-		rawSQL := "UPDATE data_source SET is_default=? WHERE org_id=? AND id <> ?"
-		if _, err := sess.Exec(rawSQL, false, ds.OrgId, ds.Id); err != nil {
+		rawSQL := "UPDATE data_source SET is_default=? WHERE id <> ?"
+		if _, err := sess.Exec(rawSQL, false, ds.Id); err != nil {
 			return err
 		}
 	}
@@ -201,7 +200,6 @@ func (ss *SQLStore) UpdateDataSource(ctx context.Context, cmd *models.UpdateData
 
 		ds := &models.DataSource{
 			Id:                cmd.Id,
-			OrgId:             cmd.OrgId,
 			Name:              cmd.Name,
 			Type:              cmd.Type,
 			Access:            cmd.Access,
@@ -237,9 +235,9 @@ func (ss *SQLStore) UpdateDataSource(ctx context.Context, cmd *models.UpdateData
 			// the reason we allow cmd.version > db.version is make it possible for people to force
 			// updates to datasources using the datasource.yaml file without knowing exactly what version
 			// a datasource have in the db.
-			updateSession = sess.Where("id=? and org_id=? and version < ?", ds.Id, ds.OrgId, ds.Version)
+			updateSession = sess.Where("id=? and version < ?", ds.Id, ds.Version)
 		} else {
-			updateSession = sess.Where("id=? and org_id=?", ds.Id, ds.OrgId)
+			updateSession = sess.Where("id=?", ds.Id)
 		}
 
 		affected, err := updateSession.Update(ds)
@@ -262,7 +260,7 @@ func generateNewDatasourceUid(sess *DBSession, orgId int64) (string, error) {
 	for i := 0; i < 3; i++ {
 		uid := generateNewUid()
 
-		exists, err := sess.Where("org_id=? AND uid=?", orgId, uid).Get(&models.DataSource{})
+		exists, err := sess.Where("uid=?", uid).Get(&models.DataSource{})
 		if err != nil {
 			return "", err
 		}

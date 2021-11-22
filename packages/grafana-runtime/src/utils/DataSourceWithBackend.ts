@@ -14,7 +14,7 @@ import {
 } from '@grafana/data';
 import { merge, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { getBackendSrv, getDataSourceSrv, getGrafanaLiveSrv } from '../services';
+import { getBackendSrv, getDataSourceSrv, getGrafanaLiveSrv, getLocationSrv } from '../services';
 import { BackendDataSourceResponse, toDataQueryResponse } from './queryResponse';
 
 const ExpressionDatasourceID = '__expr__';
@@ -129,12 +129,15 @@ class DataSourceWithBackend<
       body.to = range.to.valueOf().toString();
     }
 
+    let { siteId, assetId } = getLocationSrv().getLocationQuery();
+
     return getBackendSrv()
       .fetch<BackendDataSourceResponse>({
         url: '/api/ds/query',
         method: 'POST',
         data: body,
         requestId,
+        headers: { 'Site-Id': siteId, 'Asset-Id': assetId },
       })
       .pipe(
         switchMap((raw) => {

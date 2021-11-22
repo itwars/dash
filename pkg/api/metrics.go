@@ -3,7 +3,9 @@ package api
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
+	"github.com/grafana/grafana/pkg/bus"
 	"github.com/grafana/grafana/pkg/tsdb/grafanads"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -75,6 +77,40 @@ func (hs *HTTPServer) QueryMetricsV2(c *models.ReqContext, reqDTO dtos.MetricReq
 			Model:         query,
 			DataSource:    ds,
 		})
+	}
+
+	siteId := int64(0)
+	siteIdHeader := c.Req.Header.Get("Site-Id")
+	if siteIdHeader != "" {
+		siteId, _ = strconv.ParseInt(siteIdHeader, 10, 64)
+	}
+
+	assetId := int64(0)
+	assetIdHeader := c.Req.Header.Get("Asset-Id")
+	if assetIdHeader != "" {
+		assetId, _ = strconv.ParseInt(assetIdHeader, 10, 64)
+	}
+
+	if (siteId != 0 || assetId != 0) && (ds.Type == models.DS_INFLUXDB || ds.Type == models.DS_INFLUXDB_08) {
+
+		permission := models.GetPermissionLevel(c.OrgRole)
+		if c.IsGrafanaAdmin {
+			permission = models.PERMISSIONLEVEL_GRAFANAADMIN
+		}
+
+		access := models.SiteAccessMsg{
+			OrgId:           c.OrgId,
+			UserId:          c.UserId,
+			SiteId:          siteId,
+			PermissionLevel: permission,
+		}
+		if err := bus.Dispatch(&access); err != nil {
+			return response.Error(http.StatusInternalServerError, "site access failed", err)
+		}
+
+		if !access.Result {
+			return response.Error(http.StatusForbidden, "site access denied", nil)
+		}
 	}
 
 	err := hs.PluginRequestValidator.Validate(ds.Url, nil)

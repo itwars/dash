@@ -26,6 +26,7 @@ interface FormModel {
   role: OrgRole;
   name: string;
   loginOrEmail?: string;
+  phone?: string;
   sendEmail: boolean;
   email: string;
 }

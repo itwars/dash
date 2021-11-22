@@ -7,6 +7,7 @@ type AddInviteForm struct {
 	Name         string          `json:"name"`
 	Role         models.RoleType `json:"role" binding:"Required"`
 	SendEmail    bool            `json:"sendEmail"`
+	Phone        string          `json:"phone"`
 }
 
 type InviteInfo struct {
@@ -14,6 +15,7 @@ type InviteInfo struct {
 	Name      string `json:"name"`
 	Username  string `json:"username"`
 	InvitedBy string `json:"invitedBy"`
+	Phone     string `json:"phone"`
 }
 
 type CompleteInviteForm struct {
@@ -23,4 +25,5 @@ type CompleteInviteForm struct {
 	Username        string `json:"username"`
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirmPassword"`
+	Phone           string `json:"phone"`
 }

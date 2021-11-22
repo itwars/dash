@@ -9,6 +9,7 @@ interface SaveDashboardAsFormDTO {
   title: string;
   $folder: { id?: number; title?: string };
   copyTags: boolean;
+  index: number;
 }
 
 const getSaveAsDashboardClone = (dashboard: DashboardModel) => {
@@ -18,6 +19,7 @@ const getSaveAsDashboardClone = (dashboard: DashboardModel) => {
   clone.title += ' Copy';
   clone.editable = true;
   clone.hideControls = false;
+  clone.index = 0;
 
   // remove alerts if source dashboard is already persisted
   // do not want to create alert dupes
@@ -47,6 +49,7 @@ export const SaveDashboardAsForm: React.FC<SaveDashboardFormProps & { isNew?: bo
       title: dashboard.meta.folderTitle,
     },
     copyTags: false,
+    index: 0,
   };
 
   const validateDashboardName = (getFormValues: () => SaveDashboardAsFormDTO) => async (dashboardName: string) => {
@@ -79,6 +82,7 @@ export const SaveDashboardAsForm: React.FC<SaveDashboardFormProps & { isNew?: bo
           clone,
           {
             folderId: data.$folder.id,
+            index: data.index,
           },
           dashboard
         );
@@ -98,6 +102,9 @@ export const SaveDashboardAsForm: React.FC<SaveDashboardFormProps & { isNew?: bo
               aria-label="Save dashboard title field"
               autoFocus
             />
+          </Field>
+          <Field label="Sort index">
+            <Input type="number" {...register('index')} aria-label="Save dashboard index" />
           </Field>
           <Field label="Folder">
             <InputControl

@@ -2,7 +2,7 @@ import { cloneDeep, extend, get, has, isString, map as _map, omit, pick, reduce 
 import { lastValueFrom, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-import { DataSourceWithBackend, frameToMetricFindValue, getBackendSrv } from '@grafana/runtime';
+import { DataSourceWithBackend, frameToMetricFindValue, getBackendSrv, getLocationSrv } from '@grafana/runtime';
 import {
   AnnotationEvent,
   AnnotationQueryRequest,
@@ -190,7 +190,13 @@ export default class InfluxDatasource extends DataSourceWithBackend<InfluxQuery,
 
     // We want to interpolate these variables on backend
     const { __interval, __interval_ms, ...rest } = scopedVars;
-
+    let { siteId, assetId, orgId } = getLocationSrv().getLocationQuery();
+    scopedVars = {
+      ...scopedVars,
+      siteId: { text: 'siteId', value: siteId },
+      assetId: { text: 'assetId', value: assetId },
+      orgId: { text: 'orgId', value: orgId },
+    };
     return {
       ...query,
       query: this.templateSrv.replace(query.query ?? '', rest), // The raw query text
@@ -207,6 +213,13 @@ export default class InfluxDatasource extends DataSourceWithBackend<InfluxQuery,
     const queryTargets: any[] = [];
 
     let i, y;
+    let { siteId, assetId, orgId } = getLocationSrv().getLocationQuery();
+    options.scopedVars = {
+      ...options.scopedVars,
+      siteId: { text: 'siteId', value: siteId },
+      assetId: { text: 'assetId', value: assetId },
+      orgId: { text: 'orgId', value: orgId },
+    };
 
     let allQueries = _map(targets, (target) => {
       if (target.hide) {
@@ -339,6 +352,13 @@ export default class InfluxDatasource extends DataSourceWithBackend<InfluxQuery,
 
     let expandedQueries = queries;
     if (queries && queries.length > 0) {
+      let { siteId, assetId, orgId } = getLocationSrv().getLocationQuery();
+      scopedVars = {
+        ...scopedVars,
+        siteId: { text: 'siteId', value: siteId },
+        assetId: { text: 'assetId', value: assetId },
+        orgId: { text: 'orgId', value: orgId },
+      };
       expandedQueries = queries.map((query) => {
         const expandedQuery = {
           ...query,
@@ -534,6 +554,9 @@ export default class InfluxDatasource extends DataSourceWithBackend<InfluxQuery,
     }
 
     if (method === 'POST') {
+      let { siteId, assetId } = getLocationSrv().getLocationQuery();
+      req.headers['Site-Id'] = siteId;
+      req.headers['Asset-Id'] = assetId;
       req.headers['Content-type'] = 'application/x-www-form-urlencoded';
     }
 

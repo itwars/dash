@@ -35,6 +35,7 @@ export interface DashboardMeta {
   fromScript?: boolean;
   fromFile?: boolean;
   hasUnsavedFolderChange?: boolean;
+  index?: number;
 }
 
 export interface DashboardDataDTO {
@@ -81,4 +82,18 @@ export interface DashboardState {
   initError: DashboardInitError | null;
   permissions: DashboardAcl[];
   modifiedQueries: QueriesToUpdateOnDashboardLoad | null;
+}
+
+export interface DashboardNav {
+  id: number;
+  index: number;
+  title?: string;
+  type?: string;
+  url?: string;
+}
+
+export interface DashboardNavsState {
+  dashboardNavs: DashboardNav[];
+  id: string;
+  hasFetched: boolean;
 }

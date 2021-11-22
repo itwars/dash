@@ -1,0 +1,17 @@
+{
+  "type": "panel",
+  "name": "Switch",
+  "id": "switch",
+
+  "info": {
+    "description": "Switch Panel for Grafana",
+    "author": {
+      "name": "Grafana Labs",
+      "url": "https://grafana.com"
+    },
+    "logos": {
+      "small": "img/icn-switch-panel.svg",
+      "large": "img/icn-switch-panel.svg"
+    }
+  }
+}

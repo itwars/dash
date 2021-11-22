@@ -136,9 +136,9 @@ func registerGetDsInfoHandler() {
 	bus.AddHandlerCtx("test", func(ctx context.Context, query *models.GetDataSourceQuery) error {
 		switch {
 		case query.Id == 2:
-			query.Result = &models.DataSource{Id: 2, OrgId: 1, Uid: "000000002"}
+			query.Result = &models.DataSource{Id: 2, Uid: "000000002"}
 		case query.Id == 4:
-			query.Result = &models.DataSource{Id: 4, OrgId: 1, Uid: "000000004"}
+			query.Result = &models.DataSource{Id: 4, Uid: "000000004"}
 		default:
 			return fmt.Errorf("datasource not found")
 		}

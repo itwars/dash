@@ -11,11 +11,13 @@ import (
 	"github.com/grafana/grafana/pkg/plugins/manager"
 	"github.com/grafana/grafana/pkg/plugins/plugindashboards"
 	"github.com/grafana/grafana/pkg/registry"
+	"github.com/grafana/grafana/pkg/services/alarmstates"
 	"github.com/grafana/grafana/pkg/services/alerting"
 	"github.com/grafana/grafana/pkg/services/cleanup"
 	"github.com/grafana/grafana/pkg/services/dashboardsnapshots"
 	"github.com/grafana/grafana/pkg/services/live"
 	"github.com/grafana/grafana/pkg/services/live/pushhttp"
+	"github.com/grafana/grafana/pkg/services/microservice"
 	"github.com/grafana/grafana/pkg/services/ngalert"
 	"github.com/grafana/grafana/pkg/services/notifications"
 	"github.com/grafana/grafana/pkg/services/pluginsettings"
@@ -45,13 +47,13 @@ func ProvideBackgroundServiceRegistry(
 	rendering *rendering.RenderingService, tokenService models.UserTokenBackgroundService,
 	provisioning *provisioning.ProvisioningServiceImpl, alerting *alerting.AlertEngine, pm *manager.PluginManager,
 	backendPM *backendmanager.Manager, metrics *metrics.InternalMetricsService,
-	usageStats *uss.UsageStats, tracing *tracing.TracingService, remoteCache *remotecache.RemoteCache,
+	usageStats *uss.UsageStats, tracing *tracing.TracingService, remoteCache *remotecache.RemoteCache, alarmState *alarmstates.AlarmState,
 	// Need to make sure these are initialized, is there a better place to put them?
 	_ *azuremonitor.Service, _ *cloudwatch.CloudWatchService, _ *elasticsearch.Service, _ *graphite.Service,
 	_ *influxdb.Service, _ *loki.Service, _ *opentsdb.Service, _ *prometheus.Service, _ *tempo.Service,
 	_ *testdatasource.TestDataPlugin, _ *plugindashboards.Service, _ *dashboardsnapshots.Service, _ secrets.Service,
 	_ *postgres.Service, _ *mysql.Service, _ *mssql.Service, _ *grafanads.Service, _ *cloudmonitoring.Service,
-	_ *pluginsettings.Service, _ *alerting.AlertNotificationService,
+	_ *pluginsettings.Service, _ *alerting.AlertNotificationService, _ *microservice.Microservice,
 ) *BackgroundServiceRegistry {
 	return NewBackgroundServiceRegistry(
 		httpServer,
@@ -69,7 +71,8 @@ func ProvideBackgroundServiceRegistry(
 		metrics,
 		usageStats,
 		tracing,
-		remoteCache)
+		remoteCache,
+		alarmState)
 }
 
 // BackgroundServiceRegistry provides background services.

@@ -14,6 +14,7 @@ export const newLink = {
   targetBlank: false,
   keepTime: false,
   includeVars: false,
+  index: 0,
 } as DashboardLink;
 
 const linkTypeOptions = [

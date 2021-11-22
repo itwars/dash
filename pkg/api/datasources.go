@@ -32,7 +32,6 @@ func (hs *HTTPServer) GetDataSources(c *models.ReqContext) response.Response {
 	result := make(dtos.DataSourceList, 0)
 	for _, ds := range query.Result {
 		dsItem := dtos.DataSourceListItemDTO{
-			OrgId:     ds.OrgId,
 			Id:        ds.Id,
 			UID:       ds.Uid,
 			Name:      ds.Name,
@@ -404,7 +403,6 @@ func convertModelToDtos(ds *models.DataSource) dtos.DataSource {
 	dto := dtos.DataSource{
 		Id:                ds.Id,
 		UID:               ds.Uid,
-		OrgId:             ds.OrgId,
 		Name:              ds.Name,
 		Url:               ds.Url,
 		Type:              ds.Type,

@@ -39,6 +39,8 @@ const tempoPlugin = async () =>
   await import(/* webpackChunkName: "tempoPlugin" */ 'app/plugins/datasource/tempo/module');
 const alertmanagerPlugin = async () =>
   await import(/* webpackChunkName: "alertmanagerPlugin" */ 'app/plugins/datasource/alertmanager/module');
+const dataservicePlugin = async () =>
+  await import(/* webpackChunkName: "dataservicePlugin" */ 'app/plugins/datasource/dataservice/module');
 
 import * as textPanel from 'app/plugins/panel/text/module';
 import * as timeseriesPanel from 'app/plugins/panel/timeseries/module';
@@ -67,6 +69,10 @@ import * as welcomeBanner from 'app/plugins/panel/welcome/module';
 import * as nodeGraph from 'app/plugins/panel/nodeGraph/module';
 import * as histogramPanel from 'app/plugins/panel/histogram/module';
 import * as alertGroupsPanel from 'app/plugins/panel/alertGroups/module';
+import * as siteListPanel from 'app/plugins/panel/sitelist/module';
+import * as assetListPanel from 'app/plugins/panel/assetlist/module';
+import * as switchPanel from 'app/plugins/panel/switch/module';
+import * as buttonPanel from 'app/plugins/panel/button/module';
 
 // Async loaded panels
 const geomapPanel = async () => await import(/* webpackChunkName: "geomapPanel" */ 'app/plugins/panel/geomap/module');
@@ -94,6 +100,7 @@ const builtInPlugins: any = {
   'app/plugins/datasource/grafana-azure-monitor-datasource/module': azureMonitorPlugin,
   'app/plugins/datasource/tempo/module': tempoPlugin,
   'app/plugins/datasource/alertmanager/module': alertmanagerPlugin,
+  'app/plugins/datasource/dataservice/module': dataservicePlugin,
 
   'app/plugins/panel/text/module': textPanel,
   'app/plugins/panel/timeseries/module': timeseriesPanel,
@@ -125,6 +132,10 @@ const builtInPlugins: any = {
   'app/plugins/panel/nodeGraph/module': nodeGraph,
   'app/plugins/panel/histogram/module': histogramPanel,
   'app/plugins/panel/alertGroups/module': alertGroupsPanel,
+  'app/plugins/panel/assetlist/module': assetListPanel,
+  'app/plugins/panel/sitelist/module': siteListPanel,
+  'app/plugins/panel/switch/module': switchPanel,
+  'app/plugins/panel/button/module': buttonPanel,
 };
 
 export default builtInPlugins;

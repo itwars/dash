@@ -17793,6 +17793,7 @@ fsevents@~2.1.2:
     react-select: 4.3.0
     react-select-event: ^5.1.0
     react-split-pane: 0.1.89
+    react-switch: 6.0.0
     react-test-renderer: 17.0.1
     react-transition-group: 4.4.1
     react-use: 17.2.4
@@ -28025,6 +28026,18 @@ fsevents@~2.1.2:
   dependencies:
     prop-types: ^15.5.4
   checksum: f0e646e1488a18849a2a0fcff459a3769869d62be5729ff578dc6d37d0c0617706075efe09a15ff9372ba35419e31af5b0df154bc9487d1381cdc80d3dab6d7c
+  languageName: node
+  linkType: hard
+
+"react-switch@npm:6.0.0":
+  version: 6.0.0
+  resolution: "react-switch@npm:6.0.0"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0 || ^17.0.0
+    react-dom: ^15.3.0 || ^16.0.0 || ^17.0.0
+  checksum: 216f3f7bb6ba367a4e8bba10c823a6269a961fd74a0d49a82460b4cf516567f72344d4222930d7eb2e0e610562fad264dd26c95e32cac1dc553a8b7eed4b43f0
   languageName: node
   linkType: hard
 

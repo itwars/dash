@@ -96,7 +96,7 @@ func (hs *HTTPServer) SearchTeams(c *models.ReqContext) response.Response {
 	}
 
 	var userIdFilter int64
-	if hs.Cfg.EditorsCanAdmin && c.OrgRole != models.ROLE_ADMIN {
+	if c.OrgRole != models.ROLE_ADMIN {
 		userIdFilter = c.SignedInUser.UserId
 	}
 

@@ -175,9 +175,7 @@ func setUpDatabase(t *testing.T, store *sqlstore.SQLStore) {
 
 	err := store.WithDbSession(context.Background(), func(sess *sqlstore.DBSession) error {
 		_, err := sess.Insert(&models.DataSource{
-			Id: 1,
-			// This will be the ID of the main org
-			OrgId:   2,
+			Id:      1,
 			Name:    "Test",
 			Type:    "cloudwatch",
 			Created: time.Now(),

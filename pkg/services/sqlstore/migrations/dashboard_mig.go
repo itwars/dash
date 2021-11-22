@@ -230,4 +230,8 @@ func addDashboardMigration(mg *Migrator) {
 		Cols: []string{"is_folder"},
 		Type: IndexType,
 	}))
+
+	mg.AddMigration("Add index column", NewAddColumnMigration(dashboardV2, &Column{
+		Name: "index", Type: DB_Int, Nullable: true,
+	}))
 }

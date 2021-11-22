@@ -5,6 +5,7 @@ export interface SaveDashboardOptions extends CloneOptions {
   overwrite?: boolean;
   message?: string;
   makeEditable?: boolean;
+  index?: number;
 }
 
 export interface SaveDashboardFormProps {

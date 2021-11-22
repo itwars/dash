@@ -201,6 +201,7 @@ async function moveDashboard(uid: string, toFolder: FolderInfo) {
     dashboard: fullDash.dashboard,
     folderId: toFolder.id,
     overwrite: false,
+    index: fullDash.meta.index,
   };
 
   try {
@@ -257,6 +258,7 @@ export interface SaveDashboardOptions {
   message?: string;
   folderId?: number;
   overwrite?: boolean;
+  index?: number;
 }
 
 export function saveDashboard(options: SaveDashboardOptions) {
@@ -267,6 +269,7 @@ export function saveDashboard(options: SaveDashboardOptions) {
     message: options.message ?? '',
     overwrite: options.overwrite ?? false,
     folderId: options.folderId,
+    index: Number(options.index),
   });
 }
 

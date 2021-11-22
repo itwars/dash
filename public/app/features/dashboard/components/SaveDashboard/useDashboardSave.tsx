@@ -10,11 +10,14 @@ import { DashboardSavedEvent } from 'app/types/events';
 
 const saveDashboard = (saveModel: any, options: SaveDashboardOptions, dashboard: DashboardModel) => {
   let folderId = options.folderId;
+  let index = options.index;
   if (folderId === undefined) {
     folderId = dashboard.meta.folderId ?? saveModel.folderId;
   }
-
-  return saveDashboardApiCall({ ...options, folderId, dashboard: saveModel });
+  if (index === undefined) {
+    index = dashboard.meta.index || saveModel.index;
+  }
+  return saveDashboardApiCall({ ...options, folderId, dashboard: saveModel, index });
 };
 
 export const useDashboardSave = (dashboard: DashboardModel) => {

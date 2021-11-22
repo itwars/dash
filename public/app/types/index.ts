@@ -18,6 +18,12 @@ export * from './angular';
 export * from './query';
 export * from './preferences';
 export * from './accessControl';
+export * from './sites';
+export * from './assets';
+export * from './alarms';
+export * from './sitetypes';
+export * from './assettypes';
+export * from './useralarms';
 
 import * as CoreEvents from './events';
 export { CoreEvents };

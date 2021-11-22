@@ -22,6 +22,7 @@ export interface LocationService {
    * This is from the old LocationSrv interface
    * @deprecated use partial, push or replace instead */
   update: (update: LocationUpdate) => void;
+  getLocationQuery: () => UrlQueryMap;
 }
 
 /** @internal */
@@ -95,6 +96,10 @@ export class HistoryWrapper implements LocationService {
   }
 
   getSearchObject() {
+    return locationSearchToObject(this.history.location.search);
+  }
+
+  getLocationQuery() {
     return locationSearchToObject(this.history.location.search);
   }
 

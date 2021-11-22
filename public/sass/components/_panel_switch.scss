@@ -1,0 +1,21 @@
+.switch-panel {
+  position: relative;
+  display: table;
+  width: 100%;
+  height: 100%;
+
+  .switch-container {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
+  .slider-container {
+    margin: 10%;
+    vertical-align: middle;
+    text-align: center;
+  }
+}

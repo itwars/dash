@@ -65,7 +65,7 @@ func TestDatasourceAsConfig(t *testing.T) {
 
 			Convey("One datasource in database with same name", func() {
 				fakeRepo.loadAll = []*models.DataSource{
-					{Name: "Graphite", OrgId: 1, Id: 1},
+					{Name: "Graphite", Id: 1},
 				}
 
 				Convey("should update one datasource", func() {
@@ -106,8 +106,8 @@ func TestDatasourceAsConfig(t *testing.T) {
 		Convey("Two configured datasource and purge others ", func() {
 			Convey("two other datasources in database", func() {
 				fakeRepo.loadAll = []*models.DataSource{
-					{Name: "old-graphite", OrgId: 1, Id: 1},
-					{Name: "old-graphite2", OrgId: 1, Id: 2},
+					{Name: "old-graphite", Id: 1},
+					{Name: "old-graphite2", Id: 2},
 				}
 
 				Convey("should have two new datasources", func() {
@@ -127,8 +127,8 @@ func TestDatasourceAsConfig(t *testing.T) {
 		Convey("Two configured datasource and purge others = false", func() {
 			Convey("two other datasources in database", func() {
 				fakeRepo.loadAll = []*models.DataSource{
-					{Name: "Graphite", OrgId: 1, Id: 1},
-					{Name: "old-graphite2", OrgId: 1, Id: 2},
+					{Name: "Graphite", Id: 1},
+					{Name: "old-graphite2", Id: 2},
 				}
 
 				Convey("should have two new datasources", func() {
@@ -284,7 +284,7 @@ func mockInsert(cmd *models.AddDataSourceCommand) error {
 
 func mockGet(cmd *models.GetDataSourceQuery) error {
 	for _, v := range fakeRepo.loadAll {
-		if cmd.Name == v.Name && cmd.OrgId == v.OrgId {
+		if cmd.Name == v.Name {
 			cmd.Result = v
 			return nil
 		}

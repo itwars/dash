@@ -19,6 +19,7 @@ export class User {
   lightTheme: boolean;
   hasEditPermissionInFolders: boolean;
   email?: string;
+  phone?: string;
   permissions?: UserPermission;
 
   constructor() {
@@ -36,6 +37,7 @@ export class User {
     this.lightTheme = false;
     this.hasEditPermissionInFolders = false;
     this.email = undefined;
+    this.phone = undefined;
     if (config.bootData.user) {
       extend(this, config.bootData.user);
     }

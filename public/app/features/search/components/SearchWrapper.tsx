@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
-import DashboardSearch from './DashboardSearch';
 import { useUrlParams } from 'app/core/navigation/hooks';
 import { defaultQueryParams } from '../reducers/searchQueryReducer';
+import CustomSearch from './CustomSearch';
 
 export const SearchWrapper: FC = memo(() => {
   const [params, updateUrlParams] = useUrlParams();
@@ -13,7 +13,7 @@ export const SearchWrapper: FC = memo(() => {
     }
   };
 
-  return isOpen ? <DashboardSearch onCloseSearch={closeSearch} /> : null;
+  return isOpen ? <CustomSearch onCloseSearch={closeSearch} /> : null;
 });
 
 SearchWrapper.displayName = 'SearchWrapper';
