@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	"github.com/grafana/grafana/pkg/services/sqlstore/migrations/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/sqlstore/migrations/ualert"
 	. "github.com/grafana/grafana/pkg/services/sqlstore/migrator"
 )
@@ -65,6 +66,7 @@ func (*OSSMigrations) AddMigration(mg *Migrator) {
 	addAlarmHistoryMigrations(mg)
 	addNotifierMigrations(mg)
 	addNotificationPreferenceMigrations(mg)
+	accesscontrol.AddMigration(mg)
 }
 
 func addMigrationLogMigrations(mg *Migrator) {

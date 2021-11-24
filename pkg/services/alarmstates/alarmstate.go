@@ -50,7 +50,7 @@ func (a *AlarmState) Run(ctx context.Context) error {
 					Enabled:    job.Enabled,
 				}
 				if err := a.Bus.Dispatch(msg); err != nil {
-					log.Errorf(0, "creating alarm_state failed. error: %v", err)
+					a.log.Error("creating alarm_state failed.", "error", err)
 				}
 			}
 		case job := <-a.updateQueue:
@@ -66,7 +66,7 @@ func (a *AlarmState) Run(ctx context.Context) error {
 					Enabled:    job.Enabled,
 				}
 				if err := a.Bus.Dispatch(msg); err != nil {
-					log.Errorf(0, "update alarm_state failed. error: %v", err)
+					a.log.Error("update alarm_state failed.", "error", err)
 				}
 			}
 		case job := <-a.updateAlarmsQueue:
@@ -79,7 +79,7 @@ func (a *AlarmState) Run(ctx context.Context) error {
 					Enabled: job.Enabled,
 				}
 				if err := a.Bus.Dispatch(msg); err != nil {
-					log.Errorf(0, "update alarm_state failed. error: %v", err)
+					a.log.Error("update alarm_state failed.", "error", err)
 				}
 			}
 		}

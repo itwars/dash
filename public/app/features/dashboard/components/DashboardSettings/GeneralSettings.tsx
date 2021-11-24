@@ -101,7 +101,7 @@ export function GeneralSettingsUnconnected({ dashboard, updateTimeZone, updateWe
           <Input id="index-input" name="index" onBlur={onBlur} defaultValue={dashboard.index} />
         </Field>
         <Field label="Tags">
-          <TagsInput tags={dashboard.tags} onChange={onTagsChange} />
+          <TagsInput id="tags-input" tags={dashboard.tags} onChange={onTagsChange} />
         </Field>
         <Field label="Folder">
           <FolderPicker

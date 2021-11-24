@@ -13,9 +13,16 @@ export interface NavModelItem {
   breadcrumbs?: NavModelBreadcrumb[];
   target?: string;
   parentItem?: NavModelItem;
+  section?: NavSection;
   showOrgSwitcher?: boolean;
   onClick?: () => void;
   index?: number;
+}
+
+export enum NavSection {
+  Core = 'core',
+  Plugin = 'plugin',
+  Config = 'config',
 }
 
 /**

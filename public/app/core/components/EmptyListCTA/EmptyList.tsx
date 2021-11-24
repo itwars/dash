@@ -1,6 +1,6 @@
 import React from 'react';
 import { CallToActionCard, Icon } from '@grafana/ui';
-import { css } from 'emotion';
+import { css } from '@emotion/css';
 
 export interface Props {
   title: string;

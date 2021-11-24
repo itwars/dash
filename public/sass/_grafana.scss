@@ -88,7 +88,7 @@
 @import 'components/panel_switch';
 
 // LOAD @grafana/ui components
-@import '../../packages/grafana-ui/src/index';
+@import '@grafana/ui/src/index';
 
 // PAGES
 @import 'pages/login';

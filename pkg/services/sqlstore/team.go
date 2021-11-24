@@ -134,6 +134,7 @@ func DeleteTeam(ctx context.Context, cmd *models.DeleteTeamCommand) error {
 
 		deletes := []string{
 			"DELETE FROM team_member WHERE org_id=? and team_id = ?",
+			"DELETE FROM site_team WHERE org_id=? and team_id = ?",
 			"DELETE FROM team WHERE org_id=? and id = ?",
 			"DELETE FROM dashboard_acl WHERE org_id=? and team_id = ?",
 		}

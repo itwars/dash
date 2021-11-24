@@ -96,7 +96,7 @@ func createAlarmState(org_id int64, site_id int64, asset_id int64, msg *models.C
 			Context:   msg.Context,
 		}
 		if _, err := sess.Insert(&alarmState); err != nil {
-			log.Errorf(3, "Failed to create alarm_state %v. error: %v", msg, err)
+			log.New("alarm_state").Error("Failed to create alarm_state", "msg", msg, "error", err)
 		}
 		return err
 	})

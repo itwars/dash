@@ -162,7 +162,7 @@ func SiteAccess(msg *models.SiteAccessMsg) error {
 
 	} else {
 		query := `SELECT 1 FROM site_team INNER JOIN team_member ON team_member.team_id = site_team.team_id WHERE site_team.site_id = ? AND team_member.user_id = ?`
-		if result, err := x.Query(query, msg.OrgId, msg.SiteId); err != nil {
+		if result, err := x.Query(query, msg.SiteId, msg.UserId); err != nil {
 			msg.Result = false
 			return nil
 		} else if len(result) == 1 {

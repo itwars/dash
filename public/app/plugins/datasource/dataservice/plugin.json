@@ -2,7 +2,7 @@
   "name": "Dataservice",
   "id": "dataservice",
   "type": "datasource",
-  "category": "other",
+  "category": "sql",
 
   "metrics": true,
 

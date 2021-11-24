@@ -7,16 +7,13 @@ WIRE_TAGS = "oss"
 -include local/Makefile
 include .bingo/Variables.mk
 
-.PHONY: all deps-go deps-js deps build-go build-server build-cli build-js build build-docker-dev build-docker-full lint-go golangci-lint test-go test-js test run run-frontend clean devenv devenv-down protobuf drone help
+.PHONY: all deps-go deps-js deps build-go build-server build-cli build-js build build-docker-dev build-docker-full lint-go golangci-lint test-go test-js gen-ts test run run-frontend clean devenv devenv-down protobuf drone help
 
 GO = go
 GO_FILES ?= ./pkg/...
 SH_FILES ?= $(shell find ./scripts -name *.sh)
 
 all: deps build
-
-drone-version:
-    DRONE_VERSION := $(shell drone -v | cut -d' ' -f3)
 
 ##@ Dependencies
 
@@ -35,7 +32,7 @@ node_modules: package.json yarn.lock ## Install node modules.
 
 gen-go: $(WIRE)
 	@echo "generate go files"
-	$(WIRE) gen -tags $(WIRE_TAGS) ./pkg/server
+	$(WIRE) gen -tags $(WIRE_TAGS) ./pkg/server ./pkg/cmd/grafana-cli/runner
 
 build-go: gen-go ## Build all Go binaries.
 	@echo "build go files"
@@ -64,8 +61,7 @@ run: scripts/go/bin/bra ## Build and run web server on filesystem changes.
 	@APP_NAME="dashboard" APP_SLOGAN="IoT Platform" APP_MODE="development" APP_PROTOCOL="http" APP_PORT=3000 APP_DOMAIN="localhost" POSTGRES_HOST="localhost" \
 	POSTGRES_PORT=5432 POSTGRES_DBNAME="dashboard" POSTGRES_USER="postgres" POSTGRES_PASSWORD="Qwertyu10P" SERVICE_PROTOCOL="http" READER_DOMAIN="localhost" READER_PORT=9000 \
 	WRITER_DOMAIN="localhost" WRITER_PORT=10000 NOTIFICATION_DOMAIN="notification" NOTIFICATION_PORT=9004 REPORT_DOMAIN="report" REPORT_PORT=9006 REDIS_HOST="localhost" REDIS_PORT=6379 \
-	DS_DATASERVICE_URL="http://localhost:9000" ADMIN_USERNAME="admin" ADMIN_SECRET="admin" SMTP_HOST="smtp-relay.sendinblue.com:587" SMTP_USER="jayaraj.esvar@nxtthinq.com" SMTP_PWD="UM4zVsWf7GnPrNq0" SMTP_FROM="jayaraj.esvar@nxtthinq.com" \
-	SMTP_FROMNAME="Dashboard" GOOGLE_CLIENT_ID="563903188303-pt5udg56qq2fgvkr0443bqj68n55t2e8.apps.googleusercontent.com" GOOGLE_SECRET="7S41-oea3Qc_Lu2U6byQZOVM" GOOGLE_ALLOWED_DOMAIN=localhost \
+	DS_DATASERVICE_URL="http://localhost:9000" ADMIN_USERNAME="admin" ADMIN_SECRET="admin" \
 	scripts/go/bin/bra run
 
 run-frontend: deps-js ## Fetch js dependencies and watch frontend for rebuild
@@ -155,13 +151,16 @@ clean: ## Clean up intermediate build artifacts.
 	rm -rf node_modules
 	rm -rf public/build
 
+gen-ts:
+	@echo "generating TypeScript definitions"
+	go get github.com/tkrajina/typescriptify-golang-structs/typescriptify@v0.1.7
+	tscriptify -interface -package=github.com/grafana/grafana/pkg/services/live/pipeline -import="import { FieldConfig } from '@grafana/data'" -target=public/app/features/live/pipeline/models.gen.ts pkg/services/live/pipeline/config.go
+	go mod tidy
+
 # This repository's configuration is protected (https://readme.drone.io/signature/).
 # Use this make target to regenerate the configuration YAML files when
 # you modify starlark files.
 drone: $(DRONE)
-	@if [ "$(DRONE_VERSION)" != "1.4.0" ]; then\
-		echo "WARN: You are using drone-cli ${DRONE_VERSION}. Please update your LOCAL version to 1.4.0. Using latest bingo version...";\
-	fi
 	$(DRONE) starlark --format
 	$(DRONE) lint .drone.yml
 	$(DRONE) --server https://drone.grafana.net sign --save grafana/grafana
